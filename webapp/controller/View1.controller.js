@@ -27,7 +27,12 @@ sap.ui.define([
 
     return Controller.extend("aiproject.controller.View1", {
         onInit: function () {
-            // Define local state model for UI properties
+            // ----------------------------------------------------
+            // DATA FLOW: LOCAL STATE MODEL
+            // Contains UI properties (e.g. active tab, active nav view, target values).
+            // Updates to this model instantly propagates to the UI controls via XML binding,
+            // such as: saudaValue -> '{localState>/saudaValue}'
+            // ----------------------------------------------------
             this.oLocalModel = new JSONModel({
                 selectedDistributor: "all",
                 activeTab: "Sauda",
@@ -56,13 +61,34 @@ sap.ui.define([
             });
             this.getView().setModel(this.oLocalModel, "localState");
 
-            // Load static mock data
+            // ----------------------------------------------------
+            // DATA FLOW: MOCK DATA MODEL
+            // Loads static mock data from 'webapp/model/mockdata.json'.
+            // Holds large datasets (distributors list, sales analytics, STP queues, approvals).
+            // Direct binding examples in XML: items='{mockData>/bookedSaudaStatus}'
+            // ----------------------------------------------------
             var oMockModel = new JSONModel();
             oMockModel.loadData("model/mockdata.json");
             this.getView().setModel(oMockModel, "mockData");
 
-            // Update local state when mock data finishes loading
+            // DATA FLOW TRIGGER: Trigger dashboard update once mock data has been loaded
             oMockModel.attachRequestCompleted(function() {
+                // Extract nested structures and expose them at root level for XML bindings
+                var oSaudaOverview = oMockModel.getProperty("/saudaOverview");
+                if (oSaudaOverview) {
+                    if (oSaudaOverview.stpConsole) {
+                        oMockModel.setProperty("/stpConsole", oSaudaOverview.stpConsole);
+                    }
+                    if (oSaudaOverview.moreOptions) {
+                        oMockModel.setProperty("/moreOptions", oSaudaOverview.moreOptions);
+                    }
+                    if (oSaudaOverview.ledgerOverview) {
+                        oMockModel.setProperty("/ledgerOverview", oSaudaOverview.ledgerOverview);
+                    }
+                    if (oSaudaOverview.bookedSaudaStatus) {
+                        oMockModel.setProperty("/bookedSaudaStatus", oSaudaOverview.bookedSaudaStatus);
+                    }
+                }
                 this._updateDashboardData();
             }.bind(this));
         },
@@ -95,6 +121,10 @@ sap.ui.define([
             // Sub-page back navigation click delegates
             this._attachClickDelegate("btnBookedSaudaBack", this.onBookedSaudaBack);
             this._attachClickDelegate("btnLedgerBack", this.onLedgerBack);
+            this._attachClickDelegate("btnUpdatesBack", this.onUpdatesBack);
+            this._attachClickDelegate("btnFeedbackRequest", this.onFeedbackRequestPress);
+            this._attachClickDelegate("btnSurvey", this.onSurveyPress);
+            this._attachClickDelegate("btnSpecialNotice", this.onSpecialNoticePress);
 
             // Bottom navigation click delegates
             this._attachClickDelegate("navHome", function() { this._setActiveNav("navHome"); }.bind(this));
@@ -107,9 +137,13 @@ sap.ui.define([
         _attachClickDelegate: function (sId, fnHandler) {
             var oControl = this.getView().byId(sId);
             if (oControl) {
-                oControl.addEventDelegate({
+                if (oControl._oClickDelegate) {
+                    oControl.removeEventDelegate(oControl._oClickDelegate);
+                }
+                oControl._oClickDelegate = {
                     onclick: fnHandler.bind(this)
-                });
+                };
+                oControl.addEventDelegate(oControl._oClickDelegate);
             }
         },
 
@@ -161,6 +195,12 @@ sap.ui.define([
             this.oLocalModel.setProperty("/pendingSaudaValue", oExpiredData.pendingSauda);
             this.oLocalModel.setProperty("/overdueValue", oExpiredData.overdue);
             this.oLocalModel.setProperty("/tomorrowDueValue", oExpiredData.tomorrowDue);
+
+            // Update Sales Analytics page metrics dynamically on the mockData model
+            var oSalesAnalyticsData = oMockModel.getProperty("/salesAnalyticsByDistributor/" + sDistKey);
+            if (oSalesAnalyticsData) {
+                oMockModel.setProperty("/salesAnalytics", oSalesAnalyticsData);
+            }
         },
 
         // Event Handlers for Home Page
@@ -218,18 +258,103 @@ sap.ui.define([
         },
 
         onRatePress: function () {
-            MessageBox.show(
-                "Today's Booking Rate Details:\n\n" +
-                "- Average Book Rate: ₹ 54,200 per MT\n" +
-                "- Today's Maximum Rate: ₹ 54,600 / MT\n" +
-                "- Today's Minimum Rate: ₹ 53,900 / MT\n\n" +
-                "Rates are static and updated as of 09:00 AM today.",
-                {
-                    icon: MessageBox.Icon.INFORMATION,
-                    title: "Rate Information",
-                    actions: [MessageBox.Action.CLOSE]
+            // DATA FLOW: Read dynamic average booking rate from localState model (synced with mockdata.json)
+            var sAvgRate = this.oLocalModel.getProperty("/avgRate");
+            var fRateVal = parseFloat(sAvgRate.replace(/[^\d]/g, ""));
+            var that = this;
+            var oDialog;
+
+            var oQtyInput = new Input({
+                type: "Number",
+                value: "15",
+                width: "100%"
+            });
+
+            var oAmountText = that._createControl(Text, {
+                text: "₹ 0.00"
+            }, "rate-calc-value-amount");
+
+            var updateCalculations = function () {
+                var fQty = parseFloat(oQtyInput.getValue());
+                if (fQty && fQty > 0) {
+                    var fTotal = fQty * fRateVal;
+                    oAmountText.setText("₹ " + fTotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                } else {
+                    oAmountText.setText("₹ 0.00");
                 }
-            );
+            };
+
+            oQtyInput.attachLiveChange(updateCalculations);
+
+            var oFormContainer = that._createControl(VBox, {
+                items: [
+                    that._createControl(Label, { text: "Simulated Booking Quantity (MT)" }, "sauda-auth-field-label"),
+                    oQtyInput,
+                    that._createControl(VBox, {}, "rate-calc-separator"),
+                    that._createControl(HBox, {
+                        width: "100%",
+                        justifyContent: "SpaceBetween",
+                        alignItems: "Center",
+                        items: [
+                            that._createControl(Text, { text: "Calculated Value (INR):" }, "rate-calc-value-label"),
+                            oAmountText
+                        ]
+                    })
+                ]
+            }, "rate-calc-form-box");
+
+            var oDialogContent = that._createControl(VBox, {
+                items: [
+                    // Header Section
+                    that._createControl(HBox, {
+                        items: [
+                            that._createControl(VBox, {
+                                alignItems: "Center",
+                                justifyContent: "Center",
+                                items: [
+                                    that._createControl(Icon, {
+                                        src: "sap-icon://hint"
+                                    }, "info-dialog-icon")
+                                ]
+                            }, "info-dialog-icon-circle"),
+                            that._createControl(Text, {
+                                text: "Today's Rate Calculator"
+                            }, "info-dialog-title")
+                        ]
+                    }, "info-dialog-header"),
+
+                    // Description
+                    that._createControl(Text, {
+                        text: "The average book rate for today stands at " + sAvgRate.replace("₹", "Rs. ") + "/MT. Simulate order margins dynamically below:"
+                    }, "info-dialog-body"),
+
+                    // Form Box
+                    oFormContainer,
+
+                    // Close Button
+                    that._createControl(Button, {
+                        text: "Close",
+                        press: function () {
+                            oDialog.close();
+                        }
+                    }, "info-dialog-close-btn")
+                ]
+            }, "info-dialog-container");
+
+            oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "380px",
+                content: [ oDialogContent ],
+                afterClose: function () {
+                    oDialog.destroy();
+                }
+            });
+
+            oDialog.addStyleClass("custom-rate-calc-dialog");
+            oDialog.open();
+
+            // Run initial calculation
+            updateCalculations();
         },
 
         onPendingSaudaPress: function () {
@@ -238,12 +363,17 @@ sap.ui.define([
         },
 
         onOverduePress: function () {
+            // DATA FLOW: Read dynamic total overdue value from localState model (synced with mockdata.json)
+            var sOverdue = this.oLocalModel.getProperty("/overdueValue");
+            var oDistSelect = this.getView().byId("distributorSelect");
+            var sDistName = oDistSelect && oDistSelect.getSelectedItem() ? oDistSelect.getSelectedItem().getText() : "All Distributor";
+
             MessageBox.show(
-                "Overdue Dues Breakdown:\n\n" +
+                "Overdue Dues Breakdown for " + sDistName + ":\n\n" +
                 "- Abhishek Agri Industries: ₹ 45,30,500.00 (Due > 30 Days)\n" +
                 "- Swastik Food Products: ₹ 30,12,087.08 (Due > 15 Days)\n" +
                 "- Apex Grain Merchants: ₹ 20,82,500.00 (Due > 7 Days)\n\n" +
-                "Total Overdue: " + this.oLocalModel.getProperty("/overdueValue"),
+                "Total Overdue Balance: " + sOverdue,
                 {
                     icon: MessageBox.Icon.WARNING,
                     title: "Overdue Payments",
@@ -253,11 +383,16 @@ sap.ui.define([
         },
 
         onTomorrowDuePress: function () {
+            // DATA FLOW: Read dynamic tomorrow due value from localState model (synced with mockdata.json)
+            var sTomorrowDue = this.oLocalModel.getProperty("/tomorrowDueValue");
+            var oDistSelect = this.getView().byId("distributorSelect");
+            var sDistName = oDistSelect && oDistSelect.getSelectedItem() ? oDistSelect.getSelectedItem().getText() : "All Distributor";
+
             MessageBox.show(
-                "Upcoming Dues (Tomorrow):\n\n" +
+                "Upcoming Dues Tomorrow for " + sDistName + ":\n\n" +
                 "- Galaxy Retail Corporation: ₹ 92,60,561.00\n" +
                 "- Sai Agro Foods: ₹ 60,00,000.00\n\n" +
-                "Total Incoming Dues: " + this.oLocalModel.getProperty("/tomorrowDueValue"),
+                "Total Incoming Dues: " + sTomorrowDue,
                 {
                     icon: MessageBox.Icon.INFORMATION,
                     title: "Tomorrow's Incoming Dues",
@@ -291,7 +426,89 @@ sap.ui.define([
             var oItem = oEvent.getSource();
             var oContext = oItem.getBindingContext("mockData");
             var oData = oContext.getObject();
-            this._openLedgerDetailDialog(oData.name);
+            var that = this;
+
+            var oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "360px",
+                content: [
+                    that._createControl(VBox, {
+                        items: [
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: oData.name
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: "Ledger summary for unit branch in " + oData.address + ". Balance reflects total unadjusted invoices."
+                            }, "info-dialog-body"),
+                            
+                            // Slate container details box
+                            that._createControl(VBox, {
+                                items: [
+                                    new HBox({
+                                        justifyContent: "SpaceBetween",
+                                        width: "100%",
+                                        items: [
+                                            that._createControl(Text, { text: "Owner Name:" }, "ledger-popup-label"),
+                                            that._createControl(Text, { text: oData.owner || "Swati Gupta" }, "ledger-popup-val-dark")
+                                        ]
+                                    }),
+                                    new HBox({
+                                        justifyContent: "SpaceBetween",
+                                        width: "100%",
+                                        items: [
+                                            that._createControl(Text, { text: "Total Outstanding:" }, "ledger-popup-label"),
+                                            that._createControl(Text, { text: oData.balance || "Rs. 0.00" }, "ledger-popup-val-red")
+                                        ]
+                                    }),
+                                    new HBox({
+                                        justifyContent: "SpaceBetween",
+                                        width: "100%",
+                                        items: [
+                                            that._createControl(Text, { text: "Overdue Days:" }, "ledger-popup-label"),
+                                            that._createControl(Text, { text: oData.overdueDays || "45 Days" }, "ledger-popup-val-orange")
+                                        ]
+                                    }),
+                                    new HBox({
+                                        justifyContent: "SpaceBetween",
+                                        width: "100%",
+                                        items: [
+                                            that._createControl(Text, { text: "Credit Limit Status:" }, "ledger-popup-label"),
+                                            that._createControl(Text, { text: oData.creditStatus || "Healthy" }, "ledger-popup-val-green")
+                                        ]
+                                    })
+                                ]
+                            }, "ledger-popup-box"),
+                            
+                            // Close button
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
+                        ]
+                    }, "info-dialog-container")
+                ],
+                afterClose: function () {
+                    oDialog.destroy();
+                }
+            });
+
+            oDialog.addStyleClass("custom-info-dialog");
+            oDialog.open();
         },
 
         onLedgerOverviewSearch: function(oEvent) {
@@ -340,6 +557,7 @@ sap.ui.define([
 
             var oSearchField = new SearchField({
                 placeholder: "Search ledger transactions...",
+                showSearchButton: false,
                 liveChange: function(oEvent) {
                     var sVal = oEvent.getParameter("newValue").toLowerCase();
                     var aFiltered = aLedger.filter(function(item) {
@@ -350,6 +568,7 @@ sap.ui.define([
                     oLedgerModel.setData(aFiltered);
                 }
             });
+            oSearchField.addStyleClass("custom-search-field");
 
             var oDialog = new Dialog({
                 title: "Ledger Details - " + sCustName,
@@ -388,86 +607,57 @@ sap.ui.define([
 
         // Action Handlers: Call Customer
         onCallPress: function () {
-            var aContacts = this.getView().getModel("mockData").getProperty("/contacts");
-            var oContactList = new List({
-                noDataText: "No contacts found"
-            });
-
-            var oContactModel = new JSONModel(aContacts);
-            oContactList.setModel(oContactModel, "contactModel");
-
+            var sDistKey = this.oLocalModel.getProperty("/selectedDistributor");
+            var oMockModel = this.getView().getModel("mockData");
+            var aDistributors = oMockModel.getProperty("/distributors") || [];
+            var oDist = aDistributors.find(function(d) { return d.key === sDistKey; });
+            var sDistName = oDist ? oDist.name : "All Distributor";
             var that = this;
-            oContactList.bindItems("contactModel>/", function(sId, oContext) {
-                var oData = oContext.getObject();
-                
-                var oAvatar = that._createControl(VBox, {
-                    items: [ new Text({ text: oData.avatar }) ]
-                }, "contact-item-avatar");
 
-                var oDetails = new VBox({
-                    items: [
-                        that._createControl(Text, { text: oData.name }, "contact-item-name"),
-                        that._createControl(Text, { text: oData.role + " | " + oData.phone }, "contact-item-details")
-                    ]
-                });
-
-                var oCallBtn = new Button({
-                    icon: "sap-icon://phone",
-                    type: "Emphasized",
-                    press: function() {
-                        oCallDialog.close();
-                        that._startMockCall(oData.name, oData.role);
-                    }
-                });
-
-                return new CustomListItem({
-                    content: [
-                        that._createControl(HBox, {
-                            justifyContent: "SpaceBetween",
-                            alignItems: "Center",
-                            width: "100%",
-                            items: [
-                                new HBox({ gap: "15px", alignItems: "Center", items: [ oAvatar, oDetails ] }),
-                                oCallBtn
-                            ]
-                        }, "sapUiContentPadding")
-                    ]
-                });
-            });
-
-            var oSearchField = new SearchField({
-                placeholder: "Search directory by name/role...",
-                liveChange: function(oEvent) {
-                    var sVal = oEvent.getParameter("newValue").toLowerCase();
-                    var aFiltered = aContacts.filter(function(item) {
-                        return item.name.toLowerCase().includes(sVal) || 
-                               item.role.toLowerCase().includes(sVal);
-                    });
-                    oContactModel.setData(aFiltered);
-                }
-            });
-
-            var oCallDialog = new Dialog({
-                title: "Customer Contact Directory",
-                contentWidth: "450px",
-                contentHeight: "400px",
+            var oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "360px",
                 content: [
                     that._createControl(VBox, {
-                        items: [ oSearchField, oContactList ]
-                    }, "sapUiContentPadding")
+                        items: [
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Outgoing VoIP Call"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(VBox, {
+                                items: [
+                                    new Text({ text: "Dialing register distributor number for \"" + sDistName + "\"..." }),
+                                    new Text({ text: "Ensure headset or phone audio output is synced." })
+                                ]
+                            }, "voip-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
+                        ]
+                    }, "info-dialog-container")
                 ],
-                endButton: new Button({
-                    text: "Cancel",
-                    press: function () {
-                        oCallDialog.close();
-                    }
-                }),
                 afterClose: function () {
-                    oCallDialog.destroy();
+                    oDialog.destroy();
                 }
             });
 
-            oCallDialog.open();
+            oDialog.addStyleClass("custom-voip-dialog");
+            oDialog.open();
         },
 
         // Mock Telephone calling interface
@@ -554,6 +744,7 @@ sap.ui.define([
 
             var oSearchField = new SearchField({
                 placeholder: "Search customer name...",
+                showSearchButton: false,
                 liveChange: function(oEvent) {
                     var sVal = oEvent.getParameter("newValue").toLowerCase();
                     var aFiltered = aData.filter(function(item) {
@@ -563,6 +754,7 @@ sap.ui.define([
                     oTblModel.setData(aFiltered);
                 }
             });
+            oSearchField.addStyleClass("custom-search-field");
 
             var oDialog = new Dialog({
                 title: sTitle,
@@ -641,6 +833,7 @@ sap.ui.define([
                 }
             });
 
+            oDialog.addStyleClass("custom-info-dialog");
             oDialog.open();
         },
 
@@ -673,228 +866,160 @@ sap.ui.define([
         },
 
         onPriceDiscoveryPress: function () {
-            var aPrices = this.getView().getModel("mockData").getProperty("/saudaOverview/priceDiscovery") || [];
-            var that = this;
-
-            // Commodity Selection
-            var oCommoditySelect = new Select({
-                width: "100%"
-            });
-            aPrices.forEach(function(item) {
-                oCommoditySelect.addItem(new CoreItem({
-                    key: item.commodity,
-                    text: item.commodity
-                }));
-            });
-
-            var oQtyInput = new Input({
-                placeholder: "Enter quantity in MT...",
-                type: "Number",
-                width: "100%"
-            });
-
-            // Summary Texts
-            var oBaseRateText = that._createControl(Text, { text: "-" }, "text-bold");
-            var oPremiumText = that._createControl(Text, { text: "-" }, "text-bold");
-            var oTotalRateText = that._createControl(Text, { text: "-" }, "text-bold");
-            var oEstimateValueText = that._createControl(Text, { text: "-" }, ["summary-value", "metric-value-orange"]);
-
-            // Helper function to update rates
-            var updateCalculations = function() {
-                var sKey = oCommoditySelect.getSelectedKey();
-                var oPriceItem = aPrices.find(function(x) { return x.commodity === sKey; });
-                
-                if (oPriceItem) {
-                    oBaseRateText.setText(oPriceItem.basePrice + " / MT");
-                    oPremiumText.setText(oPriceItem.premium + " / MT");
-                    oTotalRateText.setText(oPriceItem.total + " / MT");
-                    
-                    var fRate = parseFloat(oPriceItem.total.replace(/[^\d]/g, ''));
-                    var fQty = parseFloat(oQtyInput.getValue());
-                    
-                    if (fQty && fQty > 0) {
-                        var fTotal = fRate * fQty;
-                        oEstimateValueText.setText("₹ " + fTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-                    } else {
-                        oEstimateValueText.setText("-");
-                    }
-                }
-            };
-
-            oCommoditySelect.attachChange(updateCalculations);
-            oQtyInput.attachLiveChange(updateCalculations);
-
-            var oDialog = new Dialog({
-                title: "Live Price Discovery & Estimator",
-                contentWidth: "400px",
-                content: [
-                    that._createControl(VBox, {
-                        items: [
-                            new Label({ text: "Select Commodity:", labelFor: oCommoditySelect }),
-                            oCommoditySelect,
-                            new Label({ text: "Enter Quantity (MT):", labelFor: oQtyInput }),
-                            oQtyInput,
-                            that._createControl(VBox, {
-                                items: [
-                                    new HBox({ justifyContent: "SpaceBetween", width: "100%", items: [ new Text({ text: "Base Price:" }), oBaseRateText ] }),
-                                    new HBox({ justifyContent: "SpaceBetween", width: "100%", items: [ new Text({ text: "Market Premium:" }), oPremiumText ] }),
-                                    new HBox({ justifyContent: "SpaceBetween", width: "100%", items: [ new Text({ text: "Effective Rate:" }), oTotalRateText ] }),
-                                    that._createControl(VBox, {}, "price-discovery-separator"),
-                                    new HBox({ justifyContent: "SpaceBetween", width: "100%", alignItems: "Center", items: [ new Text({ text: "ESTIMATED TOTAL VALUE:" }), oEstimateValueText ] })
-                                ]
-                            }, ["ledger-summary-box", "sapUiMediumMarginTop"])
-                        ]
-                    }, "sapUiContentPadding")
-                ],
-                endButton: new Button({
-                    text: "Close",
-                    press: function () {
-                        oDialog.close();
-                    }
-                }),
-                afterOpen: function() {
-                    updateCalculations();
-                },
-                afterClose: function () {
-                    oDialog.destroy();
-                }
-            });
-
-            oDialog.open();
-        },
-
-        onLimitEnhancePress: function () {
-            var oRequestInput = new Input({
-                placeholder: "Enter enhancement value in ₹...",
-                type: "Number",
-                width: "100%"
-            });
-
-            var oJustifyArea = new TextArea({
-                placeholder: "Enter justification/reason for credit limit extension...",
-                rows: 3,
-                width: "100%"
-            });
+            var sDistKey = this.oLocalModel.getProperty("/selectedDistributor");
+            var oMockModel = this.getView().getModel("mockData");
+            var aDistributors = oMockModel.getProperty("/distributors") || [];
+            var oDist = aDistributors.find(function(d) { return d.key === sDistKey; });
+            var sDistName = oDist ? oDist.name : "All Distributors";
             var that = this;
 
             var oDialog = new Dialog({
-                title: "Request Credit Limit Enhancement",
-                contentWidth: "400px",
+                showHeader: false,
+                contentWidth: "360px",
                 content: [
                     that._createControl(VBox, {
                         items: [
                             that._createControl(HBox, {
                                 items: [
-                                    that._createControl(VBox, { items: [ new Text({ text: "CURRENT LIMIT" }), that._createControl(Text, { text: "₹ 5.00 Cr" }, "summary-value") ] }, "ledger-summary-item"),
-                                    that._createControl(VBox, { items: [ new Text({ text: "AVAILABLE BAL" }), that._createControl(Text, { text: "₹ 1.25 Cr" }, ["summary-value", "summary-value-credit"]) ] }, "ledger-summary-item")
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Price Discovery Request"
+                                    }, "info-dialog-title")
                                 ]
-                            }, "ledger-summary-box"),
-                            that._createControl(Label, { text: "Requested Enhancement Amount (₹):", labelFor: oRequestInput }, "sapUiTinyMarginBottom"),
-                            oRequestInput,
-                            that._createControl(Label, { text: "Justification:", labelFor: oJustifyArea }, ["sapUiSmallMarginTop", "sapUiTinyMarginBottom"]),
-                            oJustifyArea
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: 'Your process queue for "Price Discovery" has been successfully initiated. System allocation engines are matching rates for ' + sDistName + '.'
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
                         ]
-                    }, "sapUiContentPadding")
+                    }, "info-dialog-container")
                 ],
-                beginButton: new Button({
-                    text: "Submit Request",
-                    type: "Emphasized",
-                    press: function () {
-                        var sVal = oRequestInput.getValue();
-                        var sReason = oJustifyArea.getValue();
-
-                        if (!sVal || !sReason) {
-                            MessageBox.error("Please fill in all requested fields.");
-                            return;
-                        }
-
-                        oDialog.close();
-                        MessageBox.success("Enhancement request of ₹ " + parseFloat(sVal).toLocaleString('en-IN') + " submitted to Credit Committee for review.");
-                    }
-                }),
-                endButton: new Button({
-                    text: "Cancel",
-                    press: function () {
-                        oDialog.close();
-                    }
-                }),
                 afterClose: function () {
                     oDialog.destroy();
                 }
             });
 
+            oDialog.addStyleClass("custom-info-dialog");
+            oDialog.open();
+        },
+
+        onLimitEnhancePress: function () {
+            var sDistKey = this.oLocalModel.getProperty("/selectedDistributor");
+            var oMockModel = this.getView().getModel("mockData");
+            var aDistributors = oMockModel.getProperty("/distributors") || [];
+            var oDist = aDistributors.find(function(d) { return d.key === sDistKey; });
+            var sDistName = oDist ? oDist.name : "All Distributors";
+            var that = this;
+
+            var oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "360px",
+                content: [
+                    that._createControl(VBox, {
+                        items: [
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Limit Enhance Request"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: 'Your process queue for "Limit Enhance" has been successfully initiated. System allocation engines are matching rates for ' + sDistName + '.'
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
+                        ]
+                    }, "info-dialog-container")
+                ],
+                afterClose: function () {
+                    oDialog.destroy();
+                }
+            });
+
+            oDialog.addStyleClass("custom-info-dialog");
             oDialog.open();
         },
 
         onSalesOrderPress: function () {
-            var aOrders = this.getView().getModel("mockData").getProperty("/saudaOverview/salesOrders");
+            var sDistKey = this.oLocalModel.getProperty("/selectedDistributor");
+            var oMockModel = this.getView().getModel("mockData");
+            var aDistributors = oMockModel.getProperty("/distributors") || [];
+            var oDist = aDistributors.find(function(d) { return d.key === sDistKey; });
+            var sDistName = oDist ? oDist.name : "All Distributors";
             var that = this;
 
-            var oTable = new Table({
-                width: "100%",
-                noDataText: "No sales orders found",
-                columns: [
-                    new Column({ header: new Text({ text: "Order ID" }), width: "100px" }),
-                    new Column({ header: new Text({ text: "Customer" }) }),
-                    new Column({ header: new Text({ text: "Quantity" }), hAlign: "End", width: "100px" }),
-                    new Column({ header: new Text({ text: "Order Value" }), hAlign: "End", width: "140px" }),
-                    new Column({ header: new Text({ text: "Status" }), width: "120px", demandPopin: true, minScreenWidth: "Tablet" })
-                ]
-            });
-
-            var oTemplate = new ColumnListItem({
-                cells: [
-                    that._createControl(Text, { text: "{salesModel>id}" }, "text-bold"),
-                    new Text({ text: "{salesModel>customer}" }),
-                    new Text({ text: "{salesModel>qty}" }),
-                    that._createControl(Text, { text: "{salesModel>value}" }, "text-bold"),
-                    new Text({ text: "{salesModel>status}" })
-                ]
-            });
-
-            var oSalesModel = new JSONModel(aOrders);
-            oTable.setModel(oSalesModel, "salesModel");
-            oTable.bindItems("salesModel>/", oTemplate);
-
-            var oSearchField = new SearchField({
-                placeholder: "Search by customer name or ID...",
-                liveChange: function(oEvent) {
-                    var sVal = oEvent.getParameter("newValue").toLowerCase();
-                    var aFiltered = aOrders.filter(function(item) {
-                        return item.customer.toLowerCase().includes(sVal) || 
-                               item.id.toLowerCase().includes(sVal) ||
-                               item.status.toLowerCase().includes(sVal);
-                    });
-                    oSalesModel.setData(aFiltered);
-                }
-            });
             var oDialog = new Dialog({
-                title: "Recent Sales Orders",
-                contentWidth: "700px",
-                contentHeight: "380px",
-                resizable: true,
-                draggable: true,
+                showHeader: false,
+                contentWidth: "360px",
                 content: [
                     that._createControl(VBox, {
-                        items: [ oSearchField, oTable ]
-                    }, "sapUiContentPadding")
+                        items: [
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Sales Order Request"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: 'Your process queue for "Sales Order" has been successfully initiated. System allocation engines are matching rates for ' + sDistName + '.'
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
+                        ]
+                    }, "info-dialog-container")
                 ],
-                endButton: new Button({
-                    text: "Close",
-                    press: function () {
-                        oDialog.close();
-                    }
-                }),
                 afterClose: function () {
                     oDialog.destroy();
                 }
             });
 
+            oDialog.addStyleClass("custom-info-dialog");
             oDialog.open();
         },
 
         onSaudaApprovalPress: function () {
-            this._showApprovalsListDialog();
+            this.onCreateApprovalPress();
         },
 
         _showApprovalsListDialog: function() {
@@ -933,6 +1058,7 @@ sap.ui.define([
 
             var oSearchField = new SearchField({
                 placeholder: "Search approval request...",
+                showSearchButton: false,
                 liveChange: function(oEvent) {
                     var sVal = oEvent.getParameter("newValue").toLowerCase();
                     var aFiltered = aApprovals.filter(function(item) {
@@ -943,6 +1069,7 @@ sap.ui.define([
                     oApprovalModel.setData(aFiltered);
                 }
             });
+            oSearchField.addStyleClass("custom-search-field");
             var oDialog = new Dialog({
                 title: "Sauda Approvals Queue",
                 contentWidth: "850px",
@@ -977,108 +1104,205 @@ sap.ui.define([
             oDialog.open();
         },
 
-        // Floating action button press handler
-        onCreateApprovalPress: function () {
+                onCreateApprovalPress: function () {
             var oMockModel = this.getView().getModel("mockData");
-            var aPrices = oMockModel.getProperty("/saudaOverview/priceDiscovery") || [];
+            var that = this;
+            var oDialog;
 
-            var oCustInput = new Input({
-                placeholder: "Enter customer/distributor name...",
+            var oDistributorSelect = new Select({
                 width: "100%"
             });
-
-            var oQtyInput = new Input({
-                placeholder: "Enter quantity in MT...",
-                type: "Number",
-                width: "100%"
-            });
-
-            var oCommoditySelect = new Select({
-                width: "100%"
-            });
-            aPrices.forEach(function(item) {
-                oCommoditySelect.addItem(new CoreItem({
-                    key: item.commodity,
-                    text: item.commodity
+            var aCustomers = [
+                { key: "Adithi Trading", name: "Adithi Trading" },
+                { key: "RAJ SALES", name: "RAJ SALES" },
+                { key: "AADINATH TRENDING COMPANY", name: "AADINATH TRENDING COMPANY" },
+                { key: "Swastik Traders", name: "Swastik Traders" },
+                { key: "Vanguard Enterprises", name: "Vanguard Enterprises" }
+            ];
+            aCustomers.forEach(function(cust) {
+                oDistributorSelect.addItem(new CoreItem({
+                    key: cust.key,
+                    text: cust.name
                 }));
             });
 
-            var oRateInput = new Input({
-                placeholder: "Enter booking rate per MT...",
+            var oProductSelect = new Select({
+                width: "100%"
+            });
+            var aProducts = [
+                { key: "SOYA BEAN OIL", name: "SOYA BEAN OIL" },
+                { key: "REFINED SUGAR", name: "REFINED SUGAR" },
+                { key: "PREMIUM WHEAT", name: "PREMIUM WHEAT" },
+                { key: "COTTON BALES", name: "COTTON BALES" }
+            ];
+            aProducts.forEach(function(prod) {
+                oProductSelect.addItem(new CoreItem({
+                    key: prod.key,
+                    text: prod.name
+                }));
+            });
+
+            var oQtyInput = new Input({
                 type: "Number",
+                value: "10",
                 width: "100%"
             });
 
-            var that = this;
-            var oDialog = new Dialog({
-                title: "New Sauda Approval Request",
-                contentWidth: "400px",
-                content: [
-                    that._createControl(VBox, {
+            var oDatePicker = new DatePicker({
+                value: "08-06-2026",
+                displayFormat: "dd-MM-yyyy",
+                valueFormat: "dd-MM-yyyy",
+                width: "100%"
+            });
+
+            var oDistributorCol = new VBox({
+                width: "100%",
+                items: [
+                    that._createControl(Label, { text: "Select Distributor" }, "sauda-auth-field-label"),
+                    oDistributorSelect
+                ]
+            });
+
+            var oProductCol = new VBox({
+                width: "100%",
+                items: [
+                    that._createControl(Label, { text: "Product Segment" }, "sauda-auth-field-label"),
+                    oProductSelect
+                ]
+            });
+
+            var oQtyCol = new VBox({
+                width: "48%",
+                items: [
+                    that._createControl(Label, { text: "Quantity (MT)" }, "sauda-auth-field-label"),
+                    oQtyInput
+                ]
+            });
+
+            var oDateCol = new VBox({
+                width: "48%",
+                items: [
+                    that._createControl(Label, { text: "Booking Date" }, "sauda-auth-field-label"),
+                    oDatePicker
+                ]
+            });
+
+            var oRowFields = new HBox({
+                width: "100%",
+                justifyContent: "SpaceBetween",
+                items: [ oQtyCol, oDateCol ]
+            });
+
+            var oFormContainer = that._createControl(VBox, {
+                items: [
+                    oDistributorCol,
+                    oProductCol,
+                    oRowFields
+                ]
+            }, "sauda-auth-form-box");
+
+            var oDialogContent = that._createControl(VBox, {
+                items: [
+                    // Header Section
+                    that._createControl(HBox, {
                         items: [
-                            that._createControl(Label, { text: "Customer/Buyer Name:", labelFor: oCustInput }, "sapUiTinyMarginBottom"),
-                            oCustInput,
-                            that._createControl(Label, { text: "Select Commodity:", labelFor: oCommoditySelect }, ["sapUiSmallMarginTop", "sapUiTinyMarginBottom"]),
-                            oCommoditySelect,
-                            that._createControl(Label, { text: "Quantity (MT):", labelFor: oQtyInput }, ["sapUiSmallMarginTop", "sapUiTinyMarginBottom"]),
-                            oQtyInput,
-                            that._createControl(Label, { text: "Requested Rate per MT (₹):", labelFor: oRateInput }, ["sapUiSmallMarginTop", "sapUiTinyMarginBottom"]),
-                            oRateInput
+                            that._createControl(VBox, {
+                                alignItems: "Center",
+                                justifyContent: "Center",
+                                items: [
+                                    that._createControl(Icon, {
+                                        src: "sap-icon://hint"
+                                    }, "info-dialog-icon")
+                                ]
+                            }, "info-dialog-icon-circle"),
+                            that._createControl(Text, {
+                                text: "New Sauda Authorization"
+                            }, "info-dialog-title")
                         ]
-                    }, "sapUiContentPadding")
-                ],
-                beginButton: new Button({
-                    text: "Submit for Approval",
-                    type: "Emphasized",
-                    press: function () {
-                        var sCust = oCustInput.getValue();
-                        var sQty = oQtyInput.getValue();
-                        var sComm = oCommoditySelect.getSelectedKey();
-                        var sRate = oRateInput.getValue();
+                    }, "info-dialog-header"),
+                    
+                    // Description
+                    that._createControl(Text, {
+                        text: "Create a fast allocation request directly below. Submitting will register a pending approval into the system ledger."
+                    }, "info-dialog-body"),
+                    
+                    // Form Box
+                    oFormContainer,
+                    
+                    // Buttons Row
+                    that._createControl(HBox, {
+                        items: [
+                            that._createControl(Button, {
+                                text: "Confirm & Submit",
+                                press: function () {
+                                    var sCust = oDistributorSelect.getSelectedKey();
+                                    var sQty = oQtyInput.getValue();
+                                    var sProduct = oProductSelect.getSelectedKey();
+                                    var sDate = oDatePicker.getValue();
 
-                        if (!sCust || !sQty || !sRate) {
-                            MessageBox.error("Please fill in all requested fields.");
-                            return;
-                        }
+                                    if (!sCust || !sQty || !sDate) {
+                                        MessageBox.error("Please fill in all requested fields.");
+                                        return;
+                                    }
 
-                        // Add new mock request to the static approvals model
-                        var aApprovals = oMockModel.getProperty("/saudaOverview/approvals");
-                        var sNewId = "APR-" + (893 + aApprovals.length + 1);
-                        var fValue = parseFloat(sQty) * parseFloat(sRate);
-                        
-                        var oNewApproval = {
-                            reqId: sNewId,
-                            customer: sCust,
-                            qty: sQty + " MT",
-                            value: "₹ " + fValue.toLocaleString('en-IN', { maximumFractionDigits: 0 }),
-                            requestor: "Rohan Shelar",
-                            date: new Date().toISOString().split('T')[0],
-                            status: "Awaiting Approval"
-                        };
+                                    var aApprovals = oMockModel.getProperty("/saudaOverview/approvals");
+                                    var sNewId = "APR-" + (893 + aApprovals.length + 1);
+                                    
+                                    var fRate = 50000;
+                                    if (sProduct === "SOYA BEAN OIL") {
+                                        fRate = 92300;
+                                    } else if (sProduct === "REFINED SUGAR") {
+                                        fRate = 42100;
+                                    } else if (sProduct === "PREMIUM WHEAT") {
+                                        fRate = 54200;
+                                    } else if (sProduct === "COTTON BALES") {
+                                        fRate = 68200;
+                                    }
 
-                        aApprovals.unshift(oNewApproval);
-                        oMockModel.setProperty("/saudaOverview/approvals", aApprovals);
+                                    var fValue = parseFloat(sQty) * fRate;
+                                    
+                                    var oNewApproval = {
+                                        reqId: sNewId,
+                                        customer: sCust,
+                                        qty: sQty + " MT",
+                                        value: "₹ " + fValue.toLocaleString("en-IN", { maximumFractionDigits: 0 }),
+                                        requestor: "Rohan Shelar",
+                                        date: sDate.split("-").reverse().join("-"), // convert dd-MM-yyyy to yyyy-MM-dd
+                                        status: "Awaiting Approval"
+                                    };
 
-                        oDialog.close();
-                        MessageBox.success("Sauda approval request " + sNewId + " submitted successfully. The approval queue has been updated.");
-                        
-                        // Show approvals dialog again to view changes
-                        setTimeout(function() {
-                            that._showApprovalsListDialog();
-                        }, 500);
-                    }
-                }),
-                endButton: new Button({
-                    text: "Cancel",
-                    press: function () {
-                        oDialog.close();
-                    }
-                }),
+                                    aApprovals.unshift(oNewApproval);
+                                    oMockModel.setProperty("/saudaOverview/approvals", aApprovals);
+
+                                    oDialog.close();
+                                    MessageBox.success("Sauda approval request " + sNewId + " submitted successfully. The approval queue has been updated.");
+                                    
+                                    setTimeout(function() {
+                                        that._showApprovalsListDialog();
+                                    }, 500);
+                                }
+                            }, "sauda-auth-submit-btn"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "sauda-auth-close-btn")
+                        ]
+                    }, "sauda-auth-buttons-row")
+                ]
+            }, "info-dialog-container");
+
+            oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "380px",
+                content: [ oDialogContent ],
                 afterClose: function () {
                     oDialog.destroy();
                 }
             });
 
+            oDialog.addStyleClass("custom-sauda-auth-dialog");
             oDialog.open();
         },
 
@@ -1101,118 +1325,247 @@ sap.ui.define([
         },
 
         _showProductUpdatesDialog: function() {
+            this.oLocalModel.setProperty("/activeNav", "Updates");
+            setTimeout(function() {
+                this._bindAllClickDelegates();
+            }.bind(this), 100);
+        },
+
+        onUpdatesBack: function () {
+            this.oLocalModel.setProperty("/activeNav", "More");
+            setTimeout(function() {
+                this._bindAllClickDelegates();
+            }.bind(this), 100);
+        },
+
+        onFeedbackRequestPress: function () {
             var that = this;
             var oDialog = new Dialog({
-                title: "Interactive Product Updates",
-                contentWidth: "400px",
+                showHeader: false,
+                contentWidth: "360px",
                 content: [
                     that._createControl(VBox, {
                         items: [
-                            new Text({ text: "What's New in v2.4.6:", class: "text-bold" }).addStyleClass("sapUiSmallMarginBottom"),
-                            new HBox({ gap: "10px", items: [ new Text({ text: "•" }), new Text({ text: "STP Console pipeline monitoring is now active with direct plant allocations." }) ] }).addStyleClass("sapUiTinyMarginBottom"),
-                            new HBox({ gap: "10px", items: [ new Text({ text: "•" }), new Text({ text: "Sales Analytics page has been enhanced with volume metrics and family bar trends." }) ] }).addStyleClass("sapUiTinyMarginBottom"),
-                            new HBox({ gap: "10px", items: [ new Text({ text: "•" }), new Text({ text: "Sauda approvals queue includes real-time booking additions." }) ] }).addStyleClass("sapUiTinyMarginBottom"),
-                            new HBox({ gap: "10px", items: [ new Text({ text: "•" }), new Text({ text: "Bug fixes resolving inline XML style and class expression console warnings." }) ] })
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://message-information"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Feedback Request"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: "You tapped on \"Feedback Request\". This triggers your designated surveyor " +
+                                    "feedback portal where you can enter ratings, review upcoming products " +
+                                    "or report transit issues directly to the mill manager."
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
                         ]
-                    }, "sapUiContentPadding")
+                    }, "info-dialog-container")
                 ],
-                endButton: new Button({
-                    text: "Close",
-                    press: function() {
-                        oDialog.close();
-                    }
-                }),
-                afterClose: function() {
+                afterClose: function () {
                     oDialog.destroy();
                 }
             });
+
+            oDialog.addStyleClass("custom-info-dialog");
+            oDialog.open();
+        },
+
+        onSurveyPress: function () {
+            var that = this;
+            var oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "360px",
+                content: [
+                    that._createControl(VBox, {
+                        items: [
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://message-information"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Survey"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: "You tapped on \"Survey\". This triggers your designated surveyor " +
+                                    "feedback portal where you can enter ratings, review upcoming products " +
+                                    "or report transit issues directly to the mill manager."
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
+                        ]
+                    }, "info-dialog-container")
+                ],
+                afterClose: function () {
+                    oDialog.destroy();
+                }
+            });
+
+            oDialog.addStyleClass("custom-info-dialog");
+            oDialog.open();
+        },
+
+        onSpecialNoticePress: function () {
+            var that = this;
+            var oDialog = new Dialog({
+                showHeader: false,
+                contentWidth: "360px",
+                content: [
+                    that._createControl(VBox, {
+                        items: [
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://message-information"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Special Information / Notice"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: "You tapped on \"Special Information / Notice\". This triggers your " +
+                                    "designated surveyor feedback portal where you can enter ratings, review " +
+                                    "upcoming products or report transit issues directly to the mill manager."
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
+                        ]
+                    }, "info-dialog-container")
+                ],
+                afterClose: function () {
+                    oDialog.destroy();
+                }
+            });
+
+            oDialog.addStyleClass("custom-info-dialog");
             oDialog.open();
         },
 
         _showInviteDealersDialog: function() {
             var that = this;
-            var oNameInput = new Input({ placeholder: "Enter sub-dealer name...", width: "100%" });
-            var oPhoneInput = new Input({ placeholder: "Enter mobile number...", type: "Tel", width: "100%" });
-            var oEmailInput = new Input({ placeholder: "Enter email address...", type: "Email", width: "100%" });
-
             var oDialog = new Dialog({
-                title: "Invite Sub-Dealers",
-                contentWidth: "400px",
+                showHeader: false,
+                contentWidth: "360px",
                 content: [
                     that._createControl(VBox, {
                         items: [
-                            new Label({ text: "Sub-Dealer Name:", labelFor: oNameInput }).addStyleClass("sapUiTinyMarginBottom"),
-                            oNameInput,
-                            new Label({ text: "Mobile Number:", labelFor: oPhoneInput }).addStyleClass("sapUiSmallMarginTop").addStyleClass("sapUiTinyMarginBottom"),
-                            oPhoneInput,
-                            new Label({ text: "Email Address:", labelFor: oEmailInput }).addStyleClass("sapUiSmallMarginTop").addStyleClass("sapUiTinyMarginBottom"),
-                            oEmailInput
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "App Sharer"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: "Generating your personalized distributor invite code..."
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
                         ]
-                    }, "sapUiContentPadding")
+                    }, "info-dialog-container")
                 ],
-                beginButton: new Button({
-                    text: "Send Invite",
-                    type: "Emphasized",
-                    press: function() {
-                        var sName = oNameInput.getValue();
-                        var sPhone = oPhoneInput.getValue();
-                        if (!sName || !sPhone) {
-                            MessageBox.error("Sub-Dealer Name and Mobile Number are required.");
-                            return;
-                        }
-                        oDialog.close();
-                        MessageBox.success("Invitation link sent to " + sName + " (" + sPhone + ") successfully.");
-                    }
-                }),
-                endButton: new Button({
-                    text: "Cancel",
-                    press: function() {
-                        oDialog.close();
-                    }
-                }),
-                afterClose: function() {
+                afterClose: function () {
                     oDialog.destroy();
                 }
             });
+
+            oDialog.addStyleClass("custom-info-dialog");
             oDialog.open();
         },
 
         _showPortalSettingsDialog: function() {
             var that = this;
-            var oSmsSwitch = new sap.m.Switch({ state: true, customTextOn: "Yes", customTextOff: "No" });
-            var oPushSwitch = new sap.m.Switch({ state: true, customTextOn: "Yes", customTextOff: "No" });
-            var oPerformanceSwitch = new sap.m.Switch({ state: false, customTextOn: "Yes", customTextOff: "No" });
-
             var oDialog = new Dialog({
-                title: "Portal Configuration Settings",
-                contentWidth: "400px",
+                showHeader: false,
+                contentWidth: "360px",
                 content: [
                     that._createControl(VBox, {
                         items: [
-                            new HBox({ justifyContent: "SpaceBetween", alignItems: "Center", width: "100%", items: [ new Label({ text: "Enable SMS Alerts" }), oSmsSwitch ] }).addStyleClass("sapUiSmallMarginBottom"),
-                            new HBox({ justifyContent: "SpaceBetween", alignItems: "Center", width: "100%", items: [ new Label({ text: "Push Notifications" }), oPushSwitch ] }).addStyleClass("sapUiSmallMarginBottom"),
-                            new HBox({ justifyContent: "SpaceBetween", alignItems: "Center", width: "100%", items: [ new Label({ text: "High Performance GPU Render" }), oPerformanceSwitch ] })
+                            that._createControl(HBox, {
+                                items: [
+                                    that._createControl(VBox, {
+                                        alignItems: "Center",
+                                        justifyContent: "Center",
+                                        items: [
+                                            that._createControl(Icon, {
+                                                src: "sap-icon://hint"
+                                            }, "info-dialog-icon")
+                                        ]
+                                    }, "info-dialog-icon-circle"),
+                                    that._createControl(Text, {
+                                        text: "Preferences"
+                                    }, "info-dialog-title")
+                                ]
+                            }, "info-dialog-header"),
+                            that._createControl(Text, {
+                                text: "Toggle app settings or dark themes in upcoming version!"
+                            }, "info-dialog-body"),
+                            that._createControl(Button, {
+                                text: "Close",
+                                press: function () {
+                                    oDialog.close();
+                                }
+                            }, "info-dialog-close-btn")
                         ]
-                    }, "sapUiContentPadding")
+                    }, "info-dialog-container")
                 ],
-                beginButton: new Button({
-                    text: "Save Settings",
-                    type: "Emphasized",
-                    press: function() {
-                        oDialog.close();
-                        MessageToast.show("Portal configuration saved successfully.");
-                    }
-                }),
-                endButton: new Button({
-                    text: "Cancel",
-                    press: function() {
-                        oDialog.close();
-                    }
-                }),
-                afterClose: function() {
+                afterClose: function () {
                     oDialog.destroy();
                 }
             });
+
+            oDialog.addStyleClass("custom-info-dialog");
             oDialog.open();
         },
 

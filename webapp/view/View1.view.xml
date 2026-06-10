@@ -604,6 +604,7 @@
                             <SearchField id="ledgerOverviewSearch"
                                          placeholder="Search Swati Enterprises, Shrikrishna, Kailash..."
                                          liveChange="onLedgerOverviewSearch"
+                                         showSearchButton="false"
                                          class="custom-search-field"/>
                         </VBox>
                         
@@ -632,6 +633,106 @@
                                     </HBox>
                                 </CustomListItem>
                             </List>
+                        </VBox>
+                    </VBox>
+                    
+                    <!-- PAGE 8: PRODUCT UPDATES -->
+                    <VBox visible="{= ${localState>/activeNav} === 'Updates' }" width="100%">
+                        <!-- Back button and Title Bar -->
+                        <HBox class="booked-title-bar">
+                            <VBox id="btnUpdatesBack" class="back-btn-circle">
+                                <core:Icon src="sap-icon://nav-back" class="back-btn-icon"/>
+                            </VBox>
+                            <Text text="Updates" class="booked-title"/>
+                        </HBox>
+                        
+                        <!-- LATEST UPDATES Container Card -->
+                        <VBox class="updates-panel">
+                            <Text text="LATEST UPDATES" class="updates-section-title"/>
+                            
+                            <!-- Green/Teal Carousel container -->
+                            <VBox class="updates-carousel-box">
+                                <HBox class="updates-cards-row" justifyContent="Center" alignItems="Center">
+                                    <!-- Card 1: FORTUNE SOYA (Green) -->
+                                    <VBox class="product-update-card product-card-green">
+                                        <Text text="FORTUNE" class="product-card-brand"/>
+                                        <VBox class="product-card-badge bg-green">
+                                            <Text text="SOYA" class="product-card-badge-text"/>
+                                        </VBox>
+                                        <Text text="Chunks" class="product-card-type"/>
+                                    </VBox>
+                                    
+                                    <!-- Card 2: FORTUNE KACHI (Mustard) -->
+                                    <VBox class="product-update-card product-card-mustard">
+                                        <Text text="FORTUNE" class="product-card-brand"/>
+                                        <VBox class="product-card-badge bg-mustard">
+                                            <Text text="KACHI" class="product-card-badge-text"/>
+                                        </VBox>
+                                        <Text text="Mustard" class="product-card-type"/>
+                                    </VBox>
+                                    
+                                    <!-- Card 3: FORTUNE RICE BRAN HEALTH (Orange - Active/Large) -->
+                                    <VBox class="product-update-card product-card-orange active-card">
+                                        <Text text="FORTUNE" class="product-card-brand"/>
+                                        <VBox class="product-card-badge bg-orange">
+                                            <Text text="RICE" class="product-card-badge-text-bold"/>
+                                            <Text text="BRAN HEALTH" class="product-card-badge-text-small"/>
+                                        </VBox>
+                                        <Text text="1 Litre Jug" class="product-card-type"/>
+                                    </VBox>
+                                    
+                                    <!-- Card 4: FORTUNE VIVO (Blue) -->
+                                    <VBox class="product-update-card product-card-blue">
+                                        <Text text="FORTUNE" class="product-card-brand"/>
+                                        <VBox class="product-card-badge bg-blue">
+                                            <Text text="VIVO" class="product-card-badge-text"/>
+                                        </VBox>
+                                        <Text text="Diabetes" class="product-card-type"/>
+                                    </VBox>
+                                    
+                                    <!-- Card 5: FORTUNE BESAN (Yellow/Gold) -->
+                                    <VBox class="product-update-card product-card-yellow">
+                                        <Text text="FORTUNE" class="product-card-brand"/>
+                                        <VBox class="product-card-badge bg-yellow">
+                                            <Text text="BESAN" class="product-card-badge-text"/>
+                                        </VBox>
+                                        <Text text="Gram" class="product-card-type"/>
+                                    </VBox>
+                                </HBox>
+                                
+                                <!-- Carousel Pagination dots -->
+                                <HBox class="carousel-dots" justifyContent="Center" alignItems="Center">
+                                    <VBox class="dot dot-active"/>
+                                    <VBox class="dot"/>
+                                    <VBox class="dot"/>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                        
+                        <!-- Options List -->
+                        <VBox class="updates-options-list sapUiSmallMarginTop">
+                            <!-- Feedback Request -->
+                            <HBox id="btnFeedbackRequest" class="updates-option-row">
+                                <Text text="Feedback Request" class="updates-option-text"/>
+                                <core:Icon src="sap-icon://navigation-right-arrow" class="updates-arrow-icon"/>
+                            </HBox>
+                            
+                            <!-- Survey -->
+                            <HBox id="btnSurvey" class="updates-option-row">
+                                <Text text="Survey" class="updates-option-text"/>
+                                <core:Icon src="sap-icon://navigation-right-arrow" class="updates-arrow-icon"/>
+                            </HBox>
+                            
+                            <!-- Special Information / Notice -->
+                            <HBox id="btnSpecialNotice" class="updates-option-row">
+                                <HBox alignItems="Center" gap="10px">
+                                    <Text text="Special Information / Notice" class="updates-option-text"/>
+                                    <VBox class="red-notice-badge">
+                                        <Text text="1" class="notice-badge-text"/>
+                                    </VBox>
+                                </HBox>
+                                <core:Icon src="sap-icon://navigation-right-arrow" class="updates-arrow-icon"/>
+                            </HBox>
                         </VBox>
                     </VBox>
                     
