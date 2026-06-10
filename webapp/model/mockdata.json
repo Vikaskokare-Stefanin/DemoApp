@@ -1,0 +1,574 @@
+{
+  "distributors": [
+    {
+      "key": "all",
+      "name": "All Distributor"
+    },
+    {
+      "key": "rohan",
+      "name": "Rohan Distributors"
+    },
+    {
+      "key": "apex",
+      "name": "Apex Traders"
+    },
+    {
+      "key": "shiv_shakti",
+      "name": "Shiv Shakti Enterprise"
+    }
+  ],
+  "dashboardData": {
+    "all": {
+      "MTD": {
+        "sauda": {
+          "value": "20.43 MT",
+          "target": "42.5 MT Target",
+          "percent": 48.0,
+          "weeks": [
+            { "label": "Week 1", "target": 15.0, "achievement": 12.5, "targetHeight": "75px", "achHeight": "62.5px" },
+            { "label": "Week 2", "target": 15.0, "achievement": 9.0, "targetHeight": "75px", "achHeight": "45px" },
+            { "label": "Week 3", "target": 15.0, "achievement": 8.2, "targetHeight": "75px", "achHeight": "41px" },
+            { "label": "Week 4", "target": 15.0, "achievement": 6.0, "targetHeight": "75px", "achHeight": "30px" }
+          ]
+        },
+        "sales": {
+          "value": "28.50 MT",
+          "target": "50.0 MT Target",
+          "percent": 57.0,
+          "weeks": [
+            { "label": "Week 1", "target": 12.5, "achievement": 11.2, "targetHeight": "62.5px", "achHeight": "56px" },
+            { "label": "Week 2", "target": 12.5, "achievement": 10.0, "targetHeight": "62.5px", "achHeight": "50px" },
+            { "label": "Week 3", "target": 12.5, "achievement": 6.5, "targetHeight": "62.5px", "achHeight": "32.5px" },
+            { "label": "Week 4", "target": 12.5, "achievement": 5.8, "targetHeight": "62.5px", "achHeight": "29px" }
+          ]
+        }
+      },
+      "QTD": {
+        "sauda": {
+          "value": "68.90 MT",
+          "target": "120.0 MT Target",
+          "percent": 57.4,
+          "weeks": [
+            { "label": "Week 1", "target": 40.0, "achievement": 35.0, "targetHeight": "80px", "achHeight": "70px" },
+            { "label": "Week 2", "target": 40.0, "achievement": 28.0, "targetHeight": "80px", "achHeight": "56px" },
+            { "label": "Week 3", "target": 40.0, "achievement": 22.0, "targetHeight": "80px", "achHeight": "44px" },
+            { "label": "Week 4", "target": 40.0, "achievement": 18.5, "targetHeight": "80px", "achHeight": "37px" }
+          ]
+        },
+        "sales": {
+          "value": "82.35 MT",
+          "target": "130.0 MT Target",
+          "percent": 63.3,
+          "weeks": [
+            { "label": "Week 1", "target": 45.0, "achievement": 42.0, "targetHeight": "90px", "achHeight": "84px" },
+            { "label": "Week 2", "target": 45.0, "achievement": 38.5, "targetHeight": "90px", "achHeight": "77px" },
+            { "label": "Week 3", "target": 45.0, "achievement": 25.0, "targetHeight": "90px", "achHeight": "50px" },
+            { "label": "Week 4", "target": 45.0, "achievement": 21.0, "targetHeight": "90px", "achHeight": "42px" }
+          ]
+        }
+      },
+      "YTD": {
+        "sauda": {
+          "value": "294.43 MT",
+          "target": "450.0 MT Target",
+          "percent": 65.4,
+          "weeks": [
+            { "label": "Week 1", "target": 115.0, "achievement": 98.5, "targetHeight": "90px", "achHeight": "77px" },
+            { "label": "Week 2", "target": 115.0, "achievement": 82.0, "targetHeight": "90px", "achHeight": "64px" },
+            { "label": "Week 3", "target": 115.0, "achievement": 68.0, "targetHeight": "90px", "achHeight": "53px" },
+            { "label": "Week 4", "target": 115.0, "achievement": 52.0, "targetHeight": "90px", "achHeight": "40px" }
+          ]
+        },
+        "sales": {
+          "value": "315.60 MT",
+          "target": "480.0 MT Target",
+          "percent": 65.7,
+          "weeks": [
+            { "label": "Week 1", "target": 120.0, "achievement": 110.0, "targetHeight": "90px", "achHeight": "82px" },
+            { "label": "Week 2", "target": 120.0, "achievement": 95.0, "targetHeight": "90px", "achHeight": "71px" },
+            { "label": "Week 3", "target": 120.0, "achievement": 72.0, "targetHeight": "90px", "achHeight": "54px" },
+            { "label": "Week 4", "target": 120.0, "achievement": 68.0, "targetHeight": "90px", "achHeight": "51px" }
+          ]
+        }
+      },
+      "expired": {
+        "value": "21.14 MT",
+        "nearExpired": "168.776 MT",
+        "avgRate": "₹ 54,200",
+        "pendingSauda": "2268.486 MT",
+        "overdue": "₹ 9625087.08",
+        "tomorrowDue": "₹ 15260561.00"
+      }
+    },
+    "rohan": {
+      "MTD": {
+        "sauda": {
+          "value": "5.20 MT",
+          "target": "10.0 MT Target",
+          "percent": 52.0,
+          "weeks": [
+            { "label": "Week 1", "target": 3.0, "achievement": 2.8, "targetHeight": "60px", "achHeight": "56px" },
+            { "label": "Week 2", "target": 3.0, "achievement": 2.0, "targetHeight": "60px", "achHeight": "40px" },
+            { "label": "Week 3", "target": 3.0, "achievement": 1.5, "targetHeight": "60px", "achHeight": "30px" },
+            { "label": "Week 4", "target": 3.0, "achievement": 0.8, "targetHeight": "60px", "achHeight": "16px" }
+          ]
+        },
+        "sales": {
+          "value": "6.80 MT",
+          "target": "12.0 MT Target",
+          "percent": 56.6,
+          "weeks": [
+            { "label": "Week 1", "target": 3.5, "achievement": 3.2, "targetHeight": "70px", "achHeight": "64px" },
+            { "label": "Week 2", "target": 3.5, "achievement": 2.5, "targetHeight": "70px", "achHeight": "50px" },
+            { "label": "Week 3", "target": 3.5, "achievement": 1.8, "targetHeight": "70px", "achHeight": "36px" },
+            { "label": "Week 4", "target": 3.5, "achievement": 1.1, "targetHeight": "70px", "achHeight": "22px" }
+          ]
+        }
+      },
+      "QTD": {
+        "sauda": {
+          "value": "18.40 MT",
+          "target": "30.0 MT Target",
+          "percent": 61.3,
+          "weeks": [
+            { "label": "Week 1", "target": 10.0, "achievement": 9.2, "targetHeight": "80px", "achHeight": "73.6px" },
+            { "label": "Week 2", "target": 10.0, "achievement": 7.5, "targetHeight": "80px", "achHeight": "60px" },
+            { "label": "Week 3", "target": 10.0, "achievement": 5.8, "targetHeight": "80px", "achHeight": "46.4px" },
+            { "label": "Week 4", "target": 10.0, "achievement": 4.1, "targetHeight": "80px", "achHeight": "32.8px" }
+          ]
+        },
+        "sales": {
+          "value": "22.50 MT",
+          "target": "35.0 MT Target",
+          "percent": 64.2,
+          "weeks": [
+            { "label": "Week 1", "target": 12.0, "achievement": 11.5, "targetHeight": "85px", "achHeight": "81px" },
+            { "label": "Week 2", "target": 12.0, "achievement": 9.2, "targetHeight": "85px", "achHeight": "65px" },
+            { "label": "Week 3", "target": 12.0, "achievement": 7.0, "targetHeight": "85px", "achHeight": "49px" },
+            { "label": "Week 4", "target": 12.0, "achievement": 4.8, "targetHeight": "85px", "achHeight": "34px" }
+          ]
+        }
+      },
+      "YTD": {
+        "sauda": {
+          "value": "78.20 MT",
+          "target": "110.0 MT Target",
+          "percent": 71.0,
+          "weeks": [
+            { "label": "Week 1", "target": 35.0, "achievement": 32.5, "targetHeight": "90px", "achHeight": "83px" },
+            { "label": "Week 2", "target": 35.0, "achievement": 28.0, "targetHeight": "90px", "achHeight": "72px" },
+            { "label": "Week 3", "target": 35.0, "achievement": 22.0, "targetHeight": "90px", "achHeight": "56px" },
+            { "label": "Week 4", "target": 35.0, "achievement": 15.7, "targetHeight": "90px", "achHeight": "40px" }
+          ]
+        },
+        "sales": {
+          "value": "89.40 MT",
+          "target": "125.0 MT Target",
+          "percent": 71.5,
+          "weeks": [
+            { "label": "Week 1", "target": 40.0, "achievement": 38.2, "targetHeight": "90px", "achHeight": "86px" },
+            { "label": "Week 2", "target": 40.0, "achievement": 32.0, "targetHeight": "90px", "achHeight": "72px" },
+            { "label": "Week 3", "target": 40.0, "achievement": 25.5, "targetHeight": "90px", "achHeight": "57px" },
+            { "label": "Week 4", "target": 40.0, "achievement": 18.7, "targetHeight": "90px", "achHeight": "42px" }
+          ]
+        }
+      },
+      "expired": {
+        "value": "4.25 MT",
+        "nearExpired": "28.50 MT",
+        "avgRate": "₹ 55,100",
+        "pendingSauda": "480.25 MT",
+        "overdue": "₹ 1245000.00",
+        "tomorrowDue": "₹ 2150000.00"
+      }
+    },
+    "apex": {
+      "MTD": {
+        "sauda": {
+          "value": "8.15 MT",
+          "target": "15.0 MT Target",
+          "percent": 54.3,
+          "weeks": [
+            { "label": "Week 1", "target": 5.0, "achievement": 4.5, "targetHeight": "75px", "achHeight": "67.5px" },
+            { "label": "Week 2", "target": 5.0, "achievement": 3.2, "targetHeight": "75px", "achHeight": "48px" },
+            { "label": "Week 3", "target": 5.0, "achievement": 2.8, "targetHeight": "75px", "achHeight": "42px" },
+            { "label": "Week 4", "target": 5.0, "achievement": 1.2, "targetHeight": "75px", "achHeight": "18px" }
+          ]
+        },
+        "sales": {
+          "value": "11.20 MT",
+          "target": "18.0 MT Target",
+          "percent": 62.2,
+          "weeks": [
+            { "label": "Week 1", "target": 6.0, "achievement": 5.8, "targetHeight": "80px", "achHeight": "77px" },
+            { "label": "Week 2", "target": 6.0, "achievement": 4.2, "targetHeight": "80px", "achHeight": "56px" },
+            { "label": "Week 3", "target": 6.0, "achievement": 3.0, "targetHeight": "80px", "achHeight": "40px" },
+            { "label": "Week 4", "target": 6.0, "achievement": 1.5, "targetHeight": "80px", "achHeight": "20px" }
+          ]
+        }
+      },
+      "QTD": {
+        "sauda": {
+          "value": "25.30 MT",
+          "target": "45.0 MT Target",
+          "percent": 56.2,
+          "weeks": [
+            { "label": "Week 1", "target": 15.0, "achievement": 13.8, "targetHeight": "75px", "achHeight": "69px" },
+            { "label": "Week 2", "target": 15.0, "achievement": 10.5, "targetHeight": "75px", "achHeight": "52.5px" },
+            { "label": "Week 3", "target": 15.0, "achievement": 7.2, "targetHeight": "75px", "achHeight": "36px" },
+            { "label": "Week 4", "target": 15.0, "achievement": 5.4, "targetHeight": "75px", "achHeight": "27px" }
+          ]
+        },
+        "sales": {
+          "value": "32.10 MT",
+          "target": "50.0 MT Target",
+          "percent": 64.2,
+          "weeks": [
+            { "label": "Week 1", "target": 18.0, "achievement": 17.5, "targetHeight": "85px", "achHeight": "82.6px" },
+            { "label": "Week 2", "target": 18.0, "achievement": 13.2, "targetHeight": "85px", "achHeight": "62px" },
+            { "label": "Week 3", "target": 18.0, "achievement": 9.5, "targetHeight": "85px", "achHeight": "44.8px" },
+            { "label": "Week 4", "target": 18.0, "achievement": 6.0, "targetHeight": "85px", "achHeight": "28px" }
+          ]
+        }
+      },
+      "YTD": {
+        "sauda": {
+          "value": "112.50 MT",
+          "target": "160.0 MT Target",
+          "percent": 70.3,
+          "weeks": [
+            { "label": "Week 1", "target": 50.0, "achievement": 46.5, "targetHeight": "85px", "achHeight": "79px" },
+            { "label": "Week 2", "target": 50.0, "achievement": 38.0, "targetHeight": "85px", "achHeight": "64.6px" },
+            { "label": "Week 3", "target": 50.0, "achievement": 28.5, "targetHeight": "85px", "achHeight": "48px" },
+            { "label": "Week 4", "target": 50.0, "achievement": 18.3, "targetHeight": "85px", "achHeight": "31px" }
+          ]
+        },
+        "sales": {
+          "value": "128.40 MT",
+          "target": "180.0 MT Target",
+          "percent": 71.3,
+          "weeks": [
+            { "label": "Week 1", "target": 55.0, "achievement": 52.8, "targetHeight": "90px", "achHeight": "86.4px" },
+            { "label": "Week 2", "target": 55.0, "achievement": 44.0, "targetHeight": "90px", "achHeight": "72px" },
+            { "label": "Week 3", "target": 55.0, "achievement": 32.5, "targetHeight": "90px", "achHeight": "53px" },
+            { "label": "Week 4", "target": 55.0, "achievement": 21.0, "targetHeight": "90px", "achHeight": "34.3px" }
+          ]
+        }
+      },
+      "expired": {
+        "value": "7.30 MT",
+        "nearExpired": "48.20 MT",
+        "avgRate": "₹ 53,800",
+        "pendingSauda": "820.50 MT",
+        "overdue": "₹ 3240000.00",
+        "tomorrowDue": "₹ 4180000.00"
+      }
+    },
+    "shiv_shakti": {
+      "MTD": {
+        "sauda": {
+          "value": "7.08 MT",
+          "target": "17.5 MT Target",
+          "percent": 40.5,
+          "weeks": [
+            { "label": "Week 1", "target": 7.0, "achievement": 5.2, "targetHeight": "70px", "achHeight": "52px" },
+            { "label": "Week 2", "target": 7.0, "achievement": 3.8, "targetHeight": "70px", "achHeight": "38px" },
+            { "label": "Week 3", "target": 7.0, "achievement": 3.9, "targetHeight": "70px", "achHeight": "39px" },
+            { "label": "Week 4", "target": 7.0, "achievement": 3.0, "targetHeight": "70px", "achHeight": "30px" }
+          ]
+        },
+        "sales": {
+          "value": "10.50 MT",
+          "target": "20.0 MT Target",
+          "percent": 52.5,
+          "weeks": [
+            { "label": "Week 1", "target": 8.0, "achievement": 7.0, "targetHeight": "80px", "achHeight": "70px" },
+            { "label": "Week 2", "target": 8.0, "achievement": 5.8, "targetHeight": "80px", "achHeight": "58px" },
+            { "label": "Week 3", "target": 8.0, "achievement": 4.2, "targetHeight": "80px", "achHeight": "42px" },
+            { "label": "Week 4", "target": 8.0, "achievement": 3.2, "targetHeight": "80px", "achHeight": "32px" }
+          ]
+        }
+      },
+      "QTD": {
+        "sauda": {
+          "value": "25.20 MT",
+          "target": "45.0 MT Target",
+          "percent": 56.0,
+          "weeks": [
+            { "label": "Week 1", "target": 15.0, "achievement": 12.0, "targetHeight": "80px", "achHeight": "64px" },
+            { "label": "Week 2", "target": 15.0, "achievement": 11.0, "targetHeight": "80px", "achHeight": "58.6px" },
+            { "label": "Week 3", "target": 15.0, "achievement": 9.5, "targetHeight": "80px", "achHeight": "50.6px" },
+            { "label": "Week 4", "target": 15.0, "achievement": 9.0, "targetHeight": "80px", "achHeight": "48px" }
+          ]
+        },
+        "sales": {
+          "value": "27.75 MT",
+          "target": "45.0 MT Target",
+          "percent": 61.6,
+          "weeks": [
+            { "label": "Week 1", "target": 15.0, "achievement": 12.8, "targetHeight": "80px", "achHeight": "68px" },
+            { "label": "Week 2", "target": 15.0, "achievement": 11.2, "targetHeight": "80px", "achHeight": "59.7px" },
+            { "label": "Week 3", "target": 15.0, "achievement": 10.0, "targetHeight": "80px", "achHeight": "53.3px" },
+            { "label": "Week 4", "target": 15.0, "achievement": 9.5, "targetHeight": "80px", "achHeight": "50.6px" }
+          ]
+        }
+      },
+      "YTD": {
+        "sauda": {
+          "value": "103.73 MT",
+          "target": "180.0 MT Target",
+          "percent": 57.6,
+          "weeks": [
+            { "label": "Week 1", "target": 60.0, "achievement": 52.0, "targetHeight": "85px", "achHeight": "73.6px" },
+            { "label": "Week 2", "target": 60.0, "achievement": 48.0, "targetHeight": "85px", "achHeight": "68px" },
+            { "label": "Week 3", "target": 60.0, "achievement": 42.0, "targetHeight": "85px", "achHeight": "59.5px" },
+            { "label": "Week 4", "target": 60.0, "achievement": 30.5, "targetHeight": "85px", "achHeight": "43.2px" }
+          ]
+        },
+        "sales": {
+          "value": "97.60 MT",
+          "target": "150.0 MT Target",
+          "percent": 65.0,
+          "weeks": [
+            { "label": "Week 1", "target": 50.0, "achievement": 44.0, "targetHeight": "85px", "achHeight": "74.8px" },
+            { "label": "Week 2", "target": 50.0, "achievement": 42.5, "targetHeight": "85px", "achHeight": "72.2px" },
+            { "label": "Week 3", "target": 50.0, "achievement": 38.0, "targetHeight": "85px", "achHeight": "64.6px" },
+            { "label": "Week 4", "target": 50.0, "achievement": 26.0, "targetHeight": "85px", "achHeight": "44.2px" }
+          ]
+        }
+      },
+      "expired": {
+        "value": "9.59 MT",
+        "nearExpired": "92.076 MT",
+        "avgRate": "₹ 54,900",
+        "pendingSauda": "967.736 MT",
+        "overdue": "₹ 5140087.08",
+        "tomorrowDue": "₹ 8930561.00"
+      }
+    }
+  },
+  "customerLedger": [
+    { "date": "2026-06-08", "txId": "TXN1001", "type": "Credit", "amount": "₹ 5,00,000.00", "balance": "₹ 96,25,087.08", "desc": "Payment Received - HDFC Bank" },
+    { "date": "2026-06-05", "txId": "TXN1002", "type": "Debit", "amount": "₹ 12,45,000.00", "balance": "₹ 1,01,25,087.08", "desc": "Sauda Booking #S-8930" },
+    { "date": "2026-06-02", "txId": "TXN1003", "type": "Debit", "amount": "₹ 8,30,500.00", "balance": "₹ 88,80,087.08", "desc": "Sauda Booking #S-8921" },
+    { "date": "2026-05-28", "txId": "TXN1004", "type": "Credit", "amount": "₹ 15,00,000.00", "balance": "₹ 80,49,587.08", "desc": "Payment Received - ICICI Bank" },
+    { "date": "2026-05-25", "txId": "TXN1005", "type": "Debit", "amount": "₹ 22,60,000.00", "balance": "₹ 95,49,587.08", "desc": "Sauda Booking #S-8910" },
+    { "date": "2026-05-20", "txId": "TXN1006", "type": "Credit", "amount": "₹ 10,00,000.00", "balance": "₹ 72,89,587.08", "desc": "Payment Received - SBI Bank" }
+  ],
+  "contacts": [
+    { "name": "Abhishek Deshmukh", "role": "Distributor Manager", "phone": "+91 98765 43210", "avatar": "AD" },
+    { "name": "Karan Sharma", "role": "Sales Executive", "phone": "+91 87654 32109", "avatar": "KS" },
+    { "name": "Rajesh Patel", "role": "Logistics Coordinator", "phone": "+91 76543 21098", "avatar": "RP" },
+    { "name": "Milind Kulkarni", "role": "Account Head", "phone": "+91 65432 10987", "avatar": "MK" },
+    { "name": "Vikram Singh", "role": "Warehouse In-charge", "phone": "+91 54321 09876", "avatar": "VS" }
+  ],
+  "cardDetails": {
+    "expired": [
+      { "id": "C-1020", "date": "2026-05-15", "customer": "Vanguard Enterprises", "qty": "10.50 MT", "rate": "₹ 54,200", "status": "Expired" },
+      { "id": "C-1028", "date": "2026-05-20", "customer": "Swastik Traders", "qty": "5.64 MT", "rate": "₹ 54,100", "status": "Expired" },
+      { "id": "C-1033", "date": "2026-05-25", "customer": "Apex Industries", "qty": "5.00 MT", "rate": "₹ 54,300", "status": "Expired" }
+    ],
+    "nearExpired": [
+      { "id": "C-1102", "date": "2026-06-15", "customer": "Krishna & Co", "qty": "85.20 MT", "rate": "₹ 54,200", "status": "Expires in 5 days" },
+      { "id": "C-1109", "date": "2026-06-18", "customer": "Sai Baba Distributors", "qty": "53.576 MT", "rate": "₹ 54,400", "status": "Expires in 8 days" },
+      { "id": "C-1115", "date": "2026-06-20", "customer": "Galaxy Sales Corp", "qty": "30.00 MT", "rate": "₹ 54,150", "status": "Expires in 10 days" }
+    ],
+    "pendingSauda": [
+      { "id": "PS-701", "date": "2026-06-08", "customer": "Rohan Agri Foods", "qty": "1200.00 MT", "rate": "₹ 54,000", "status": "Pending Dispatch" },
+      { "id": "PS-704", "date": "2026-06-09", "customer": "Sunlight Supermarket", "qty": "800.486 MT", "rate": "₹ 54,250", "status": "Approved" },
+      { "id": "PS-709", "date": "2026-06-09", "customer": "Ambika Stores", "qty": "268.00 MT", "rate": "₹ 54,300", "status": "Awaiting Approval" }
+    ]
+  },
+  "saudaOverview": {
+    "distribution": [
+      { "label": "0-10", "value": 0, "height": "2px" },
+      { "label": "11-20", "value": 0, "height": "2px" },
+      { "label": "21-30", "value": 1820, "height": "34px" },
+      { "label": ">30", "value": 5268, "height": "95px" }
+    ],
+    "bookedSaudas": [
+      { "id": "BS-1092", "date": "2026-06-08", "customer": "Vanguard Enterprises", "commodity": "Premium Wheat", "qty": "820 MT", "rate": "₹ 54,200", "status": "Booked" },
+      { "id": "BS-1088", "date": "2026-06-06", "customer": "Swastik Traders", "commodity": "Refined Sugar", "qty": "1000 MT", "rate": "₹ 42,100", "status": "Dispatched" },
+      { "id": "BS-1081", "date": "2026-06-02", "customer": "Krishna & Co", "commodity": "Premium Wheat", "qty": "1820 MT", "rate": "₹ 54,100", "status": "In Progress" },
+      { "id": "BS-1075", "date": "2026-05-28", "customer": "Sai Agro Foods", "commodity": "Soyabean Oil", "qty": "2448 MT", "rate": "₹ 92,300", "status": "Booked" },
+      { "id": "BS-1064", "date": "2026-05-20", "customer": "Galaxy Sales Corp", "commodity": "Refined Sugar", "qty": "1000 MT", "rate": "₹ 42,200", "status": "Completed" }
+    ],
+    "priceDiscovery": [
+      { "commodity": "Premium Wheat", "basePrice": "₹ 53,800", "premium": "₹ 400", "total": "₹ 54,200", "trend": "up" },
+      { "commodity": "Refined Sugar", "basePrice": "₹ 41,800", "premium": "₹ 300", "total": "₹ 42,100", "trend": "stable" },
+      { "commodity": "Soyabean Oil", "basePrice": "₹ 91,500", "premium": "₹ 800", "total": "₹ 92,300", "trend": "up" },
+      { "commodity": "Cotton Bales", "basePrice": "₹ 68,000", "premium": "₹ 200", "total": "₹ 68,200", "trend": "down" }
+    ],
+    "salesOrders": [
+      { "id": "SO-492", "customer": "Sunlight Supermarket", "qty": "450 MT", "value": "₹ 2,43,90,000.00", "status": "Dispatched" },
+      { "id": "SO-487", "customer": "Krishna & Co", "qty": "800 MT", "value": "₹ 4,33,60,000.00", "status": "Processing" },
+      { "id": "SO-479", "customer": "Swastik Traders", "qty": "200 MT", "value": "₹ 84,20,000.00", "status": "Delivered" },
+      { "id": "SO-472", "customer": "Ambika Stores", "qty": "120 MT", "value": "₹ 65,16,000.00", "status": "Pending Verification" }
+    ],
+    "approvals": [
+      { "reqId": "APR-893", "customer": "Karan Agro Agency", "qty": "500 MT", "value": "₹ 2,71,00,000.00", "requestor": "Karan Sharma", "date": "2026-06-09", "status": "Awaiting Approval" },
+      { "reqId": "APR-888", "customer": "Apex Grain Merchants", "qty": "350 MT", "value": "₹ 1,89,70,000.00", "requestor": "Karan Sharma", "date": "2026-06-08", "status": "Awaiting Approval" },
+      { "reqId": "APR-879", "customer": "Rohan Agri Foods", "qty": "1200 MT", "value": "₹ 6,48,00,000.00", "requestor": "Milind Kulkarni", "date": "2026-06-05", "status": "Approved" }
+    ],
+    "bookedSaudaStatus": [
+      {
+        "customer": "Adithi Trading",
+        "address": "Visakhapatnam-Andhra Pradesh-211345",
+        "expanded": false,
+        "orders": [
+          { "id": "00014856", "date": "05-08-2022", "product": "REFINED SUGAR (2 SKU)" },
+          { "id": "00014860", "date": "06-08-2022", "product": "PREMIUM WHEAT (1 SKU)" }
+        ]
+      },
+      {
+        "customer": "RAJ SALES",
+        "address": "Visakhapatnam-Andhra Pradesh-2112934",
+        "expanded": false,
+        "orders": [
+          { "id": "00014890", "date": "09-08-2022", "product": "COTTON BALES (5 SKU)" },
+          { "id": "00014899", "date": "10-08-2022", "product": "SOYA BEAN OIL (2 SKU)" },
+          { "id": "112", "date": "12-08-2022", "product": "PREMIUM WHEAT (1 SKU)" }
+        ]
+      },
+      {
+        "customer": "AADINATH TRENDING COMPANY",
+        "address": "Visakhapatnam-Andhra Pradesh-2112932",
+        "expanded": true,
+        "orders": [
+          { "id": "00014911", "date": "11-08-2022", "product": "SOYA BEAN OIL (1 SKU)" },
+          { "id": "00014912", "date": "11-08-2022", "product": "SOYA BEAN OIL (1 SKU)" },
+          { "id": "119", "date": "16-08-2022", "product": "SOYA BEAN OIL (1 SKU)" }
+        ]
+      },
+      {
+        "customer": "Sree Balaji Agro",
+        "address": "Nellore-Andhra Pradesh-224891",
+        "expanded": false,
+        "orders": [
+          { "id": "00014798", "date": "28-07-2022", "product": "REFINED SUGAR (1 SKU)" },
+          { "id": "105", "date": "01-08-2022", "product": "COTTON BALES (3 SKU)" }
+        ]
+      },
+      {
+        "customer": "Venkateshwara Food Products",
+        "address": "Vijayawada-Andhra Pradesh-221008",
+        "expanded": false,
+        "orders": [
+          { "id": "00014920", "date": "12-08-2022", "product": "SOYA BEAN OIL (4 SKU)" },
+          { "id": "125", "date": "18-08-2022", "product": "PREMIUM WHEAT (2 SKU)" }
+        ]
+      }
+    ],
+    "salesAnalytics": {
+      "totalVolume": "1,248.80 L",
+      "momGrowth": "↑ 14.2% MoM",
+      "monthlyVolume": [
+        { "label": "OCT 25", "value": 25, "height": "25px" },
+        { "label": "", "value": 40, "height": "40px" },
+        { "label": "DEC 25", "value": 20, "height": "20px" },
+        { "label": "", "value": 45, "height": "45px" },
+        { "label": "FEB 26", "value": 55, "height": "55px" },
+        { "label": "", "value": 45, "height": "45px" },
+        { "label": "APR 26", "value": 80, "height": "80px" },
+        { "label": "", "value": 70, "height": "70px" },
+        { "label": "JUN 26", "value": 95, "height": "95px" }
+      ],
+      "productFamily": [
+        { "name": "Soya Bean Edible Oil", "percent": 42, "volume": "524.5 L", "class": "progress-bar-orange" },
+        { "name": "Kachi Ghani Mustard Oil", "percent": 28, "volume": "349.6 L", "class": "progress-bar-yellow" },
+        { "name": "Fortune Soya Chunks", "percent": 18, "volume": "224.8 L", "class": "progress-bar-green" },
+        { "name": "Gram Besan & Others", "percent": 12, "volume": "149.9 L", "class": "progress-bar-blue" }
+      ]
+    },
+    "stpConsole": {
+      "status": "STP Active",
+      "description": "Straight Through Processing (STP) automates booking allocations directly to plants. View pipeline queues below:",
+      "queue": [
+        {
+          "title": "Sauda #00014911 -> Plant Allocation",
+          "subtext": "Allocated: Visakhapatnam Port Terminal",
+          "status": "Completed"
+        },
+        {
+          "title": "Sauda #00014912 -> Quality Release",
+          "subtext": "Release Code: SP-SOYA-4912",
+          "status": "Completed"
+        },
+        {
+          "title": "Sauda #119 -> Credit Limit Lock",
+          "subtext": "Enhancement check in progress",
+          "status": "Processing"
+        }
+      ]
+    },
+    "moreOptions": {
+      "version": "v2.4.6",
+      "menuItems": [
+        {
+          "id": "btnLedgerScreen",
+          "title": "Customer Ledger Screen",
+          "icon": "sap-icon://course-book",
+          "colorClass": "orange"
+        },
+        {
+          "id": "btnProductUpdates",
+          "title": "Interactive Product Updates",
+          "icon": "sap-icon://process",
+          "colorClass": "green"
+        },
+        {
+          "id": "btnInviteDealers",
+          "title": "Invite Sub-Dealers",
+          "icon": "sap-icon://add-employee",
+          "colorClass": "blue"
+        },
+        {
+          "id": "btnPortalSettings",
+          "title": "Portal Settings",
+          "icon": "sap-icon://action-settings",
+          "colorClass": "purple"
+        }
+      ]
+    },
+    "ledgerOverview": {
+      "totalOutstanding": "Rs. 14,33,44,655.16",
+      "customers": [
+        {
+          "name": "SWATI ENTERPRISES",
+          "address": "Visakhapatnam-Andhra Pradesh",
+          "balance": "Rs. 3,30,32,736.95"
+        },
+        {
+          "name": "Shrikrishnashraya Trading company",
+          "address": "Guntur-Andhra Pradesh",
+          "balance": "Rs. 2,88,80,379.77"
+        },
+        {
+          "name": "Kailash Kirana stores",
+          "address": "Vijayawada-Andhra Pradesh",
+          "balance": "Rs. 1,38,41,956.08"
+        },
+        {
+          "name": "Venkateshwara Food Products",
+          "address": "Vijayawada-Andhra Pradesh-221008",
+          "balance": "Rs. 2,12,30,500.00"
+        },
+        {
+          "name": "Adithi Trading",
+          "address": "Visakhapatnam-Andhra Pradesh-211345",
+          "balance": "Rs. 1,95,80,420.00"
+        },
+        {
+          "name": "RAJ SALES",
+          "address": "Visakhapatnam-Andhra Pradesh-2112934",
+          "balance": "Rs. 1,82,10,000.00"
+        },
+        {
+          "name": "Sree Balaji Agro",
+          "address": "Nellore-Andhra Pradesh-224891",
+          "balance": "Rs. 85,68,662.36"
+        }
+      ]
+    }
+  }
+}

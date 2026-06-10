@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sauda &amp; Sales Dashboard - Fiori Launchpad</title>
+    
+    <!-- Configure Fiori Launchpad Application Preview -->
+    <script>
+        window["sap-ushell-config"] = {
+            defaultRenderer: "fiori2",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: "hidden"
+                        }
+                    }
+                }
+            },
+            applications: {
+                "app-preview": {
+                    additionalInformation: "SAPUI5.Component=aiproject",
+                    applicationType: "URL",
+                    url: "../",
+                    description: "Sauda &amp; Sales Dashboard",
+                    title: "Sauda &amp; Sales Dashboard"
+                }
+            }
+        };
+    </script>
+    
+    <!-- Load Fiori Launchpad Sandbox Shell from CDN -->
+    <script id="sap-ushell-bootstrap" src="https://ui5.sap.com/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+    
+    <!-- Load UI5 Core Runtime from CDN -->
+    <script id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-language="en"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-onInit="module:sap/ui/core/ComponentSupport"
+        data-sap-ui-resourceroots='{
+            "aiproject": "../"
+        }'
+        data-sap-ui-frameOptions="allow">
+    </script>
+</head>
+<body class="sapUiBody" id="content">
+    <div data-sap-ui-component data-name="sap.ushell.Container" data-id="sap-ushell-slider" data-settings='{"id" : "sap-ushell-slider"}'></div>
+</body>
+</html>

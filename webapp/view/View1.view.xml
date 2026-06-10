@@ -1,0 +1,666 @@
+<mvc:View controllerName="aiproject.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    displayBlock="true">
+    
+    <Page id="page" showHeader="false" class="custom-page-bg">
+        <content>
+            <ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
+                <VBox class="sapUiContentPadding" width="100%">
+                    
+                    <!-- Header Section (Common across pages) -->
+                    <HBox class="custom-header">
+                        <VBox class="logo-container">
+                            <VBox class="custom-logo">
+                                <VBox class="custom-logo-inner">
+                                    <Text text="S" class="custom-logo-text"/>
+                                </VBox>
+                            </VBox>
+                        </VBox>
+                        
+                        <HBox class="profile-container">
+                            <Avatar src="sap-icon://person-placeholder" class="profile-avatar" displaySize="S"/>
+                            <VBox class="profile-text-wrapper">
+                                <Text text="Rohan Shelar" class="profile-name"/>
+                                <Text text="Jun 08, 2026 | 05:24 PM" class="profile-date"/>
+                            </VBox>
+                        </HBox>
+                        
+                        <VBox id="notificationBell" class="bell-container">
+                            <core:Icon src="sap-icon://bell" class="bell-icon"/>
+                            <VBox class="bell-badge"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <!-- PAGE 1: HOME DASHBOARD -->
+                    <VBox visible="{= ${localState>/activeNav} === 'Home' }" width="100%">
+                        <!-- Distributor Name Selection Card -->
+                        <VBox class="distributor-card-wrapper">
+                            <Text text="Distributor Name" class="distributor-badge"/>
+                            <Select id="distributorSelect" 
+                                    class="distributor-select" 
+                                    change="onDistributorChange" 
+                                    selectedKey="{localState>/selectedDistributor}" 
+                                    items="{mockData>/distributors}">
+                                <core:Item key="{mockData>key}" text="{mockData>name}"/>
+                            </Select>
+                        </VBox>
+                        
+                        <HBox class="tab-toggle-container">
+                            <Button id="tabSauda" text="Sauda" type="Transparent" press="onTabSaudaPress" width="50%" class="tab-btn">
+                                <customData>
+                                    <core:CustomData key="active" value="{= ${localState>/activeTab} === 'Sauda' }" writeToDom="true"/>
+                                </customData>
+                            </Button>
+                            <Button id="tabSales" text="Sales" type="Transparent" press="onTabSalesPress" width="50%" class="tab-btn">
+                                <customData>
+                                    <core:CustomData key="active" value="{= ${localState>/activeTab} === 'Sales' }" writeToDom="true"/>
+                                </customData>
+                            </Button>
+                        </HBox>
+                        
+                        <!-- Sauda content panel -->
+                        <VBox visible="{= ${localState>/activeTab} === 'Sauda' }">
+                            <VBox class="dashboard-panel">
+                                <HBox class="panel-header">
+                                    <Text text="OVERALL SAUDA (Total)" class="panel-title"/>
+                                    <HBox class="segmented-toggle-container">
+                                        <Button text="MTD" type="Transparent" press="onPeriodMtdPress" class="segmented-btn">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${localState>/activePeriod} === 'MTD' }" writeToDom="true"/>
+                                            </customData>
+                                        </Button>
+                                        <Button text="QTD" type="Transparent" press="onPeriodQtdPress" class="segmented-btn">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${localState>/activePeriod} === 'QTD' }" writeToDom="true"/>
+                                            </customData>
+                                        </Button>
+                                        <Button text="YTD" type="Transparent" press="onPeriodYtdPress" class="segmented-btn">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${localState>/activePeriod} === 'YTD' }" writeToDom="true"/>
+                                            </customData>
+                                        </Button>
+                                    </HBox>
+                                </HBox>
+                                
+                                <HBox class="metric-value-wrapper">
+                                    <Text text="{localState>/saudaValue}" class="metric-value-orange"/>
+                                    <Text text="/ {localState>/saudaTarget}" class="metric-value-dark"/>
+                                </HBox>
+                                
+                                <VBox class="custom-progress-container">
+                                    <VBox class="custom-progress-fill" width="{localState>/saudaPercent}%"/>
+                                </VBox>
+                                
+                                <!-- Weekly Chart -->
+                                <HBox class="weekly-chart-wrapper" items="{localState>/saudaWeeks}">
+                                    <VBox class="chart-column">
+                                        <HBox class="bar-pair-container" alignItems="End">
+                                            <VBox class="chart-bar chart-bar-target" height="{localState>targetHeight}"/>
+                                            <VBox class="chart-bar chart-bar-achievement" height="{localState>achHeight}"/>
+                                        </HBox>
+                                        <Text text="{localState>label}" class="chart-label-x"/>
+                                    </VBox>
+                                </HBox>
+                                
+                                <!-- Chart Legend -->
+                                <HBox class="legend-container">
+                                    <HBox class="legend-item">
+                                        <VBox class="legend-dot dot-target"/>
+                                        <Text text="Target" class="legend-text"/>
+                                    </HBox>
+                                    <HBox class="legend-item">
+                                        <VBox class="legend-dot dot-achievement"/>
+                                        <Text text="Achievement" class="legend-text"/>
+                                    </HBox>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                        
+                        <!-- Sales content panel -->
+                        <VBox visible="{= ${localState>/activeTab} === 'Sales' }">
+                            <VBox class="dashboard-panel">
+                                <HBox class="panel-header">
+                                    <Text text="OVERALL SALES (Total)" class="panel-title"/>
+                                    <HBox class="segmented-toggle-container">
+                                        <Button text="MTD" type="Transparent" press="onPeriodMtdPress" class="segmented-btn">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${localState>/activePeriod} === 'MTD' }" writeToDom="true"/>
+                                            </customData>
+                                        </Button>
+                                        <Button text="QTD" type="Transparent" press="onPeriodQtdPress" class="segmented-btn">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${localState>/activePeriod} === 'QTD' }" writeToDom="true"/>
+                                            </customData>
+                                        </Button>
+                                        <Button text="YTD" type="Transparent" press="onPeriodYtdPress" class="segmented-btn">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${localState>/activePeriod} === 'YTD' }" writeToDom="true"/>
+                                            </customData>
+                                        </Button>
+                                    </HBox>
+                                </HBox>
+                                
+                                <HBox class="metric-value-wrapper">
+                                    <Text text="{localState>/salesValue}" class="metric-value-orange"/>
+                                    <Text text="/ {localState>/salesTarget}" class="metric-value-dark"/>
+                                </HBox>
+                                
+                                <VBox class="custom-progress-container">
+                                    <VBox class="custom-progress-fill" width="{localState>/salesPercent}%"/>
+                                </VBox>
+                                
+                                <!-- Weekly Chart -->
+                                <HBox class="weekly-chart-wrapper" items="{localState>/salesWeeks}">
+                                    <VBox class="chart-column">
+                                        <HBox class="bar-pair-container" alignItems="End">
+                                            <VBox class="chart-bar chart-bar-target" height="{localState>targetHeight}"/>
+                                            <VBox class="chart-bar chart-bar-achievement" height="{localState>achHeight}"/>
+                                        </HBox>
+                                        <Text text="{localState>label}" class="chart-label-x"/>
+                                    </VBox>
+                                </HBox>
+                                
+                                <!-- Chart Legend -->
+                                <HBox class="legend-container">
+                                    <HBox class="legend-item">
+                                        <VBox class="legend-dot dot-target"/>
+                                        <Text text="Target" class="legend-text"/>
+                                    </HBox>
+                                    <HBox class="legend-item">
+                                        <VBox class="legend-dot dot-achievement"/>
+                                        <Text text="Achievement" class="legend-text"/>
+                                    </HBox>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                        
+                        <!-- Expired & Near Expired Cards Section -->
+                        <VBox class="dashboard-panel">
+                            <HBox class="panel-header">
+                                <Text text="EXPIRED &amp; NEAR EXPIRED" class="panel-title"/>
+                                <Link text="Real-time stats" press="onRealTimeStatsPress" class="panel-link"/>
+                            </HBox>
+                            
+                            <FlexBox wrap="Wrap" class="cards-grid">
+                                <!-- Card 1: Expired -->
+                                <VBox id="cardExpired" class="metric-card-custom card-red">
+                                    <HBox class="card-row-top">
+                                        <Text text="{localState>/expiredValue}" class="card-value-text"/>
+                                        <VBox class="card-icon-circle">
+                                            <core:Icon src="sap-icon://message-warning" class="card-icon"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Text text="Expired" class="card-label-bottom"/>
+                                </VBox>
+                                
+                                <!-- Card 2: Near Expired -->
+                                <VBox id="cardNearExpired" class="metric-card-custom card-orange">
+                                    <HBox class="card-row-top">
+                                        <Text text="{localState>/nearExpiredValue}" class="card-value-text"/>
+                                        <VBox class="card-icon-circle">
+                                            <core:Icon src="sap-icon://pending" class="card-icon"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Text text="Near Expired" class="card-label-bottom"/>
+                                </VBox>
+                                
+                                <!-- Card 3: Today's Rate -->
+                                <VBox id="cardRate" class="metric-card-custom card-blue">
+                                    <HBox class="card-row-top">
+                                        <Text text="{localState>/avgRate}" class="card-value-text"/>
+                                        <VBox class="card-icon-circle">
+                                            <Text text="₹" class="card-icon card-currency-icon"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Text text="Average Book Rate" class="card-label-bottom"/>
+                                </VBox>
+                                
+                                <!-- Card 4: Pending Sauda -->
+                                <VBox id="cardPendingSauda" class="metric-card-custom card-yellow">
+                                    <HBox class="card-row-top">
+                                        <Text text="{localState>/pendingSaudaValue}" class="card-value-text"/>
+                                        <VBox class="card-icon-circle">
+                                            <core:Icon src="sap-icon://clock" class="card-icon"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Text text="Pending Sauda" class="card-label-bottom"/>
+                                </VBox>
+                                
+                                <!-- Card 5: Over Due -->
+                                <VBox id="cardOverdue" class="metric-card-custom card-red">
+                                    <HBox class="card-row-top">
+                                        <Text text="Over Due" class="card-value-text card-title-sm"/>
+                                        <VBox class="card-icon-circle">
+                                            <Text text="₹" class="card-icon card-currency-icon"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Text text="{localState>/overdueValue}" class="card-value-text card-value-lg"/>
+                                </VBox>
+                                
+                                <!-- Card 6: Tomorrow Due -->
+                                <VBox id="cardTomorrowDue" class="metric-card-custom card-orange">
+                                    <HBox class="card-row-top">
+                                        <Text text="Tomorrow Due" class="card-value-text card-title-sm"/>
+                                        <VBox class="card-icon-circle">
+                                            <Text text="₹" class="card-icon card-currency-icon"/>
+                                        </VBox>
+                                    </HBox>
+                                    <Text text="{localState>/tomorrowDueValue}" class="card-value-text card-value-lg"/>
+                                </VBox>
+                            </FlexBox>
+                        </VBox>
+                        
+                        <!-- Action List Buttons -->
+                        <FlexBox wrap="Wrap" class="action-items-container">
+                            <VBox id="btnCustomerLedger" class="action-card-btn">
+                                <HBox class="action-left-content">
+                                    <VBox class="icon-box icon-box-orange">
+                                        <core:Icon src="sap-icon://attachment" class="action-icon"/>
+                                    </VBox>
+                                    <Text text="Customer Ledger" class="action-text"/>
+                                </HBox>
+                                <core:Icon src="sap-icon://navigation-right-arrow" class="action-arrow-icon"/>
+                            </VBox>
+                            
+                            <VBox id="btnCallToCustomer" class="action-card-btn">
+                                <HBox class="action-left-content">
+                                    <VBox class="icon-box icon-box-green">
+                                        <core:Icon src="sap-icon://phone" class="action-icon"/>
+                                    </VBox>
+                                    <Text text="Call to Customer" class="action-text"/>
+                                </HBox>
+                                <core:Icon src="sap-icon://navigation-right-arrow" class="action-arrow-icon"/>
+                            </VBox>
+                        </FlexBox>
+                    </VBox>
+                    
+                    
+                    <!-- PAGE 2: SAUDA OVERVIEW -->
+                    <VBox visible="{= ${localState>/activeNav} === 'Sauda' }" width="100%" class="sapUiNoContentPadding">
+                        <!-- Sauda Page Title Bar -->
+                        <HBox class="sauda-header-box">
+                            <Text text="SAUDA OVERVIEW" class="sauda-header-title"/>
+                            <Label text="Pending" class="badge-pending"/>
+                        </HBox>
+                        
+                        <!-- Pending Days Distribution (MT) Card -->
+                        <VBox class="dashboard-panel">
+                            <Text text="PENDING DAYS DISTRIBUTION (MT)" class="panel-title"/>
+                            
+                            <!-- Custom Distribution Chart -->
+                            <HBox class="dist-chart-wrapper" items="{mockData>/saudaOverview/distribution}">
+                                <!-- Baseline horizontal grid line -->
+                                <VBox class="dist-baseline"/>
+                                
+                                <VBox class="dist-column">
+                                    <VBox class="dist-bar-container">
+                                        <!-- Value text: show bold if value > 0 -->
+                                        <Text text="{= ${mockData>value} === 0 ? '0' : ${mockData>value} }" 
+                                              class="dist-val-text">
+                                            <customData>
+                                                <core:CustomData key="active" value="{= ${mockData>value} > 0 }" writeToDom="true"/>
+                                            </customData>
+                                        </Text>
+                                        
+                                        <!-- Vertical bar: visible only for values > 0 -->
+                                        <VBox visible="{= ${mockData>value} > 0 }" 
+                                              class="dist-bar" 
+                                              height="{mockData>height}"/>
+                                        
+                                        <!-- Underline: visible only for 0 values -->
+                                        <VBox visible="{= ${mockData>value} === 0 }" 
+                                              class="dist-underline"/>
+                                    </VBox>
+                                    <Text text="{mockData>label}" class="dist-label-x"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                                           <!-- Sauda Custom Cards Grid (6 items) -->
+                        <FlexBox wrap="Wrap" class="cards-grid sauda-grid-margin">
+                            
+                            <!-- Card 1: Sauda Extension (Green) -->
+                            <VBox id="cardExtension" class="metric-card-custom card-green">
+                                <HBox class="card-row-top">
+                                    <!-- Resize / Outward Arrows Icon -->
+                                    <VBox class="card-icon-circle">
+                                        <core:Icon src="sap-icon://resize" class="card-icon"/>
+                                    </VBox>
+                                </HBox>
+                                <Text text="Sauda Extension" class="card-value-text sauda-card-title"/>
+                            </VBox>
+                            
+                            <!-- Card 2: Booked Sauda (Medium Blue) -->
+                            <VBox id="cardBookedSauda" class="metric-card-custom card-blue-medium">
+                                <HBox class="card-row-top">
+                                    <VBox class="card-icon-circle">
+                                        <core:Icon src="sap-icon://clinical-order" class="card-icon"/>
+                                    </VBox>
+                                </HBox>
+                                <Text text="Booked Sauda" class="card-value-text sauda-card-title"/>
+                            </VBox>
+                            
+                            <!-- Card 3: Price Discovery (Light Blue) -->
+                            <VBox id="cardPriceDiscovery" class="metric-card-custom card-blue-light">
+                                <HBox class="card-row-top">
+                                    <VBox class="card-icon-circle">
+                                        <core:Icon src="sap-icon://zoom-in" class="card-icon"/>
+                                    </VBox>
+                                </HBox>
+                                <Text text="Price Discovery" class="card-value-text sauda-card-title"/>
+                            </VBox>
+                            
+                            <!-- Card 4: Limit Enhance (Purple) -->
+                            <VBox id="cardLimitEnhance" class="metric-card-custom card-purple-dark">
+                                <HBox class="card-row-top">
+                                    <VBox class="card-icon-circle">
+                                        <core:Icon src="sap-icon://trend-up" class="card-icon"/>
+                                    </VBox>
+                                </HBox>
+                                <Text text="Limit Enhance" class="card-value-text sauda-card-title"/>
+                            </VBox>
+                            
+                            <!-- Card 5: Sales Order (Yellow) -->
+                            <VBox id="cardSalesOrder" class="metric-card-custom card-yellow-gold">
+                                <HBox class="card-row-top">
+                                    <VBox class="card-icon-circle">
+                                        <core:Icon src="sap-icon://shipping-status" class="card-icon"/>
+                                    </VBox>
+                                </HBox>
+                                <Text text="Sales Order" class="card-value-text sauda-card-title"/>
+                            </VBox>
+                            
+                            <!-- Card 6: Sauda Approval (Maroon) -->
+                            <VBox id="cardSaudaApproval" class="metric-card-custom card-maroon-dark">
+                                <HBox class="card-row-top">
+                                    <VBox class="card-icon-circle">
+                                        <core:Icon src="sap-icon://notes" class="card-icon"/>
+                                    </VBox>
+                                </HBox>
+                                <Text text="Sauda Approval" class="card-value-text sauda-card-title-maroon"/>
+                                
+                                <!-- Floating Plus Action Button Overlay inside maroon card -->
+                                <VBox id="btnCreateApproval" class="maroon-plus-btn-wrapper">
+                                    <core:Icon src="sap-icon://add" class="maroon-plus-icon"/>
+                                </VBox>
+                            </VBox>
+                        </FlexBox>
+                    </VBox>
+                    
+                    <!-- PAGE 3: BOOKED SAUDA STATUS -->
+                    <VBox visible="{= ${localState>/activeNav} === 'BookedSauda' }" width="100%">
+                        <!-- Title bar with Back arrow -->
+                        <HBox class="booked-title-bar">
+                            <VBox id="btnBookedSaudaBack" class="back-btn-circle">
+                                <core:Icon src="sap-icon://nav-back" class="back-btn-icon"/>
+                            </VBox>
+                            <Text text="Booked Sauda Status" class="booked-title"/>
+                        </HBox>
+                        
+                        <!-- Accordion List for Booked Sauda Status -->
+                        <List items="{mockData>/bookedSaudaStatus}" showSeparators="None" backgroundDesign="Transparent">
+                            <CustomListItem type="Active" press="onAccordionToggle" class="accordion-card">
+                                <VBox width="100%">
+                                    <!-- Header Row -->
+                                    <HBox class="accordion-header">
+                                        <HBox class="accordion-header-left">
+                                            <core:Icon src="sap-icon://map-2" class="accordion-pin-icon"/>
+                                            <VBox class="accordion-title-wrapper">
+                                                <Text text="{mockData>customer}" class="accordion-customer-name"/>
+                                                <Text text="{mockData>address}" class="accordion-customer-address"/>
+                                            </VBox>
+                                        </HBox>
+                                        <core:Icon src="sap-icon://navigation-up-arrow" 
+                                                   class="accordion-arrow-icon" 
+                                                   visible="{mockData>expanded}"/>
+                                    </HBox>
+                                    
+                                    <!-- Content Row (Expanded) -->
+                                    <VBox visible="{mockData>expanded}" class="accordion-content" items="{path: 'mockData>orders', templateShareable: true}">
+                                        <VBox class="order-item-row">
+                                            <HBox class="order-row-top">
+                                                <HBox class="order-id-wrapper">
+                                                    <Text text="#" class="order-hash-symbol"/>
+                                                    <Text text="{mockData>id}" class="order-id-text"/>
+                                                </HBox>
+                                                
+                                                <HBox class="badge-approved">
+                                                    <VBox class="badge-dot-green"/>
+                                                    <core:Icon src="sap-icon://accept" class="badge-check-icon"/>
+                                                    <Text text="Approved" class="badge-text-green"/>
+                                                </HBox>
+                                            </HBox>
+                                            
+                                            <HBox class="order-row-bottom">
+                                                <HBox class="order-date-wrapper">
+                                                    <core:Icon src="sap-icon://appointment" class="order-calendar-icon"/>
+                                                    <Text text="{mockData>date}" class="order-date-text"/>
+                                                </HBox>
+                                                <Text text="{mockData>product}" class="order-product-tag"/>
+                                            </HBox>
+                                        </VBox>
+                                    </VBox>
+                                </VBox>
+                            </CustomListItem>
+                        </List>
+                    </VBox>
+                    
+                    <!-- PLACEHOLDERS FOR SALES, STP, MORE -->
+                    <!-- PAGE 4: SALES ANALYTICS -->
+                    <VBox visible="{= ${localState>/activeNav} === 'Sales' }" width="100%">
+                        <!-- Sales Header Bar -->
+                        <HBox class="sauda-header-box">
+                            <Text text="SALES ANALYTICS" class="sauda-header-title"/>
+                            <Label text="Live" class="badge-live"/>
+                        </HBox>
+                        
+                        <!-- Total Sales Volume Card -->
+                        <VBox class="dashboard-panel">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%">
+                                <VBox>
+                                    <Text text="TOTAL SALES VOLUME" class="panel-title"/>
+                                    <Text text="{mockData>/salesAnalytics/totalVolume}" class="sales-volume-value"/>
+                                </VBox>
+                                <Label text="{mockData>/salesAnalytics/momGrowth}" class="badge-growth"/>
+                            </HBox>
+                            
+                            <!-- Monthly Sales Chart -->
+                            <HBox class="sales-chart-wrapper" items="{mockData>/salesAnalytics/monthlyVolume}">
+                                <VBox class="sales-chart-column">
+                                    <VBox class="sales-chart-bar-track">
+                                        <VBox class="sales-chart-bar-fill" height="{mockData>height}"/>
+                                    </VBox>
+                                    <Text text="{mockData>label}" class="sales-chart-label-x"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                        
+                        <!-- Sales by Product Family Card -->
+                        <VBox class="dashboard-panel sauda-grid-margin">
+                            <Text text="SALES BY PRODUCT FAMILY" class="panel-title sales-product-title"/>
+                            
+                            <VBox items="{mockData>/salesAnalytics/productFamily}">
+                                <VBox class="progress-bar-container">
+                                    <HBox class="progress-bar-header">
+                                        <Text text="{mockData>name}" class="progress-bar-title"/>
+                                        <Text text="{mockData>percent}% ({mockData>volume})" class="progress-bar-value"/>
+                                    </HBox>
+                                    <VBox class="progress-bar-track">
+                                        <VBox class="progress-bar-fill" width="{mockData>percent}%">
+                                            <customData>
+                                                <core:CustomData key="color" value="{mockData>class}" writeToDom="true"/>
+                                            </customData>
+                                        </VBox>
+                                    </VBox>
+                                </VBox>
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                    
+                    <!-- PAGE 5: STP CONSOLE -->
+                    <VBox visible="{= ${localState>/activeNav} === 'STP' }" width="100%">
+                        <!-- STP Header Bar -->
+                        <HBox class="sauda-header-box">
+                            <Text text="STP CONSOLE" class="sauda-header-title"/>
+                            <Label text="{mockData>/stpConsole/status}" class="badge-stp-active"/>
+                        </HBox>
+                        
+                        <!-- STP Console Card -->
+                        <VBox class="dashboard-panel sauda-grid-margin">
+                            <!-- Info Alert Callout -->
+                            <VBox class="stp-info-box">
+                                <Text text="{mockData>/stpConsole/description}" class="stp-info-text"/>
+                            </VBox>
+                            
+                            <!-- Pipeline Queue -->
+                            <VBox items="{mockData>/stpConsole/queue}">
+                                <VBox class="stp-queue-item">
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%">
+                                        <VBox>
+                                            <Text text="{mockData>title}" class="stp-item-title"/>
+                                            <Text text="{mockData>subtext}" class="stp-item-subtext"/>
+                                        </VBox>
+                                        <Label text="{mockData>status}" class="stp-status-badge">
+                                            <customData>
+                                                <core:CustomData key="status" value="{mockData>status}" writeToDom="true"/>
+                                            </customData>
+                                        </Label>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                    
+                    <!-- PAGE 6: MORE OPTIONS -->
+                    <VBox visible="{= ${localState>/activeNav} === 'More' }" width="100%">
+                        <!-- More Header Bar -->
+                        <HBox class="sauda-header-box">
+                            <Text text="MORE OPTIONS" class="sauda-header-title"/>
+                            <Label text="{mockData>/moreOptions/version}" class="badge-version"/>
+                        </HBox>
+                        
+                        <!-- More Options List Card -->
+                        <VBox class="dashboard-panel sauda-grid-margin more-panel-container">
+                            <List items="{mockData>/moreOptions/menuItems}" showSeparators="None" backgroundDesign="Transparent">
+                                <CustomListItem type="Active" press="onMoreMenuItemPress" class="more-menu-item-row">
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="more-item-content">
+                                        <HBox alignItems="Center" gap="16px">
+                                            <VBox class="more-icon-box">
+                                                <customData>
+                                                    <core:CustomData key="color" value="{mockData>colorClass}" writeToDom="true"/>
+                                                </customData>
+                                                <core:Icon src="{mockData>icon}" class="more-icon"/>
+                                            </VBox>
+                                            <Text text="{mockData>title}" class="more-title-text"/>
+                                        </HBox>
+                                        <core:Icon src="sap-icon://navigation-right-arrow" class="more-arrow-icon"/>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </VBox>
+                    
+                    <!-- PAGE 7: CUSTOMER LEDGER OVERVIEW -->
+                    <VBox visible="{= ${localState>/activeNav} === 'CustomerLedger' }" width="100%">
+                        <!-- Back button and Title Bar -->
+                        <HBox class="booked-title-bar">
+                            <VBox id="btnLedgerBack" class="back-btn-circle">
+                                <core:Icon src="sap-icon://nav-back" class="back-btn-icon"/>
+                            </VBox>
+                            <Text text="Customer Ledger" class="booked-title"/>
+                        </HBox>
+                        
+                        <!-- Outstanding Balance Card -->
+                        <HBox class="outstanding-card" alignItems="Center" justifyContent="SpaceBetween">
+                            <HBox alignItems="Center" gap="16px">
+                                <!-- Green Rupee Avatar -->
+                                <VBox class="outstanding-avatar-container" alignItems="Center" justifyContent="Center">
+                                    <VBox class="outstanding-avatar-head"/>
+                                    <VBox class="outstanding-avatar-body">
+                                        <Text text="₹" class="outstanding-avatar-symbol"/>
+                                    </VBox>
+                                </VBox>
+                                
+                                <VBox>
+                                    <Text text="OUTSTANDING BALANCE" class="outstanding-label"/>
+                                    <Text text="{mockData>/ledgerOverview/totalOutstanding}" class="outstanding-value"/>
+                                    <HBox alignItems="Center" gap="6px" class="sapUiTinyMarginTop">
+                                        <VBox class="outstanding-dot-green"/>
+                                        <Text text="Refreshes every 30 mins" class="outstanding-refresh-text"/>
+                                    </HBox>
+                                </VBox>
+                            </HBox>
+                            
+                            <!-- Watermark Circle with Exclamation Mark -->
+                            <VBox class="outstanding-watermark-container" alignItems="Center" justifyContent="Center">
+                                <Text text="!" class="outstanding-watermark-icon"/>
+                            </VBox>
+                        </HBox>
+                        
+                        <!-- Search Bar -->
+                        <VBox class="ledger-search-container">
+                            <SearchField id="ledgerOverviewSearch"
+                                         placeholder="Search Swati Enterprises, Shrikrishna, Kailash..."
+                                         liveChange="onLedgerOverviewSearch"
+                                         class="custom-search-field"/>
+                        </VBox>
+                        
+                        <!-- Customer Balance Card List -->
+                        <VBox class="dashboard-panel sauda-grid-margin more-panel-container">
+                            <List id="ledgerCustomerList" 
+                                  items="{mockData>/ledgerOverview/customers}" 
+                                  showSeparators="None" 
+                                  backgroundDesign="Transparent">
+                                <CustomListItem type="Active" press="onCustomerLedgerItemPress" class="more-menu-item-row">
+                                    <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="more-item-content">
+                                        <!-- Left Side: Customer Name & Address -->
+                                        <VBox>
+                                            <Text text="{mockData>name}" class="ledger-cust-name"/>
+                                            <HBox alignItems="Center" gap="6px" class="sapUiTinyMarginTop">
+                                                <core:Icon src="sap-icon://map-2" class="ledger-map-pin"/>
+                                                <Text text="{mockData>address}" class="ledger-cust-address"/>
+                                            </HBox>
+                                        </VBox>
+                                        
+                                        <!-- Right Side: Balance & Action Link -->
+                                        <VBox alignItems="End">
+                                            <Text text="{mockData>balance}" class="ledger-cust-balance"/>
+                                            <Text text="Tap to View Ledger" class="ledger-cust-tap-action"/>
+                                        </VBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </VBox>
+                    
+                </VBox>
+            </ScrollContainer>
+            
+            <!-- Sticky Bottom Navigation Bar (Common across pages) -->
+            <HBox class="bottom-nav-container">
+                <VBox id="navHome" class="nav-item nav-item-active">
+                    <core:Icon src="sap-icon://home" class="nav-item-icon"/>
+                    <Text text="Home" class="nav-item-text"/>
+                </VBox>
+                <VBox id="navSauda" class="nav-item">
+                    <core:Icon src="sap-icon://collaborate" class="nav-item-icon"/>
+                    <Text text="Sauda" class="nav-item-text"/>
+                </VBox>
+                <VBox id="navSales" class="nav-item">
+                    <core:Icon src="sap-icon://line-chart" class="nav-item-icon"/>
+                    <Text text="Sales" class="nav-item-text"/>
+                </VBox>
+                <VBox id="navSTP" class="nav-item">
+                    <core:Icon src="sap-icon://clinical-order" class="nav-item-icon"/>
+                    <Text text="STP" class="nav-item-text"/>
+                </VBox>
+                <VBox id="navMore" class="nav-item">
+                    <core:Icon src="sap-icon://overflow" class="nav-item-icon"/>
+                    <Text text="More" class="nav-item-text"/>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>
