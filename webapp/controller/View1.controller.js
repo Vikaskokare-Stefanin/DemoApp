@@ -38,6 +38,7 @@ sap.ui.define([
                 activeTab: "Sauda",
                 activePeriod: "MTD",
                 activeNav: "Home", // Keeps track of bottom navigation
+                currentDateTime: "",
                 
                 // Sauda card details
                 saudaValue: "0 MT",
@@ -91,10 +92,15 @@ sap.ui.define([
                 }
                 this._updateDashboardData();
             }.bind(this));
+
+            // Initialize and update date/time dynamically
+            this._updateDateTime();
+            this._dateTimeInterval = setInterval(this._updateDateTime.bind(this), 60000);
         },
 
         onAfterRendering: function () {
             this._bindAllClickDelegates();
+            this._updateTabToggleStyles();
         },
 
         _bindAllClickDelegates: function() {
@@ -144,6 +150,21 @@ sap.ui.define([
                     onclick: fnHandler.bind(this)
                 };
                 oControl.addEventDelegate(oControl._oClickDelegate);
+            }
+        },
+
+        _updateTabToggleStyles: function () {
+            var sActiveTab = this.oLocalModel.getProperty("/activeTab");
+            var oTabSauda = this.byId("tabSauda");
+            var oTabSales = this.byId("tabSales");
+            if (oTabSauda && oTabSales) {
+                if (sActiveTab === "Sauda") {
+                    oTabSauda.addStyleClass("tab-btn-active");
+                    oTabSales.removeStyleClass("tab-btn-active");
+                } else {
+                    oTabSales.addStyleClass("tab-btn-active");
+                    oTabSauda.removeStyleClass("tab-btn-active");
+                }
             }
         },
 
@@ -213,10 +234,12 @@ sap.ui.define([
 
         onTabSaudaPress: function () {
             this.oLocalModel.setProperty("/activeTab", "Sauda");
+            this._updateTabToggleStyles();
         },
 
         onTabSalesPress: function () {
             this.oLocalModel.setProperty("/activeTab", "Sales");
+            this._updateTabToggleStyles();
         },
 
         onPeriodMtdPress: function () {
@@ -1231,6 +1254,8 @@ sap.ui.define([
                     
                     // Buttons Row
                     that._createControl(HBox, {
+                        width: "100%",
+                        justifyContent: "SpaceBetween",
                         items: [
                             that._createControl(Button, {
                                 text: "Confirm & Submit",
@@ -1274,12 +1299,65 @@ sap.ui.define([
                                     aApprovals.unshift(oNewApproval);
                                     oMockModel.setProperty("/saudaOverview/approvals", aApprovals);
 
-                                    oDialog.close();
-                                    MessageBox.success("Sauda approval request " + sNewId + " submitted successfully. The approval queue has been updated.");
+                                    // Add the order dynamically to the selected customer's orders array
+                                    var aStatus = oMockModel.getProperty("/bookedSaudaStatus") || [];
                                     
-                                    setTimeout(function() {
-                                        that._showApprovalsListDialog();
-                                    }, 500);
+                                    // Calculate new order ID: highest numerical ID across all orders, incremented and padded to 8 digits
+                                    var iMaxId = 0;
+                                    aStatus.forEach(function (cust) {
+                                        if (cust.orders && Array.isArray(cust.orders)) {
+                                            cust.orders.forEach(function (order) {
+                                                var iId = parseInt(order.id, 10);
+                                                if (!isNaN(iId) && iId > iMaxId) {
+                                                    iMaxId = iId;
+                                                }
+                                            });
+                                        }
+                                    });
+                                    var iNewOrderNum = iMaxId + 1;
+                                    var sNewOrderId = String(iNewOrderNum).padStart(8, '0');
+
+                                    // Find or create customer entry
+                                    var oCustEntry = aStatus.find(function (c) { return c.customer === sCust; });
+                                    if (!oCustEntry) {
+                                        oCustEntry = {
+                                            customer: sCust,
+                                            address: "Visakhapatnam-Andhra Pradesh-211" + Math.floor(1000 + Math.random() * 9000),
+                                            expanded: true,
+                                            orders: []
+                                        };
+                                        aStatus.push(oCustEntry);
+                                    }
+
+                                    // Create new order card details
+                                    var oNewOrder = {
+                                        id: sNewOrderId,
+                                        date: sDate, // already in dd-MM-yyyy format
+                                        product: sProduct + " (1 SKU)"
+                                    };
+                                    oCustEntry.orders.unshift(oNewOrder);
+
+                                    // Expand target customer and collapse others
+                                    aStatus.forEach(function (cust) {
+                                        if (cust.customer === sCust) {
+                                            cust.expanded = true;
+                                        } else {
+                                            cust.expanded = false;
+                                        }
+                                    });
+
+                                    // Update model properties
+                                    oMockModel.setProperty("/bookedSaudaStatus", aStatus);
+                                    oMockModel.setProperty("/saudaOverview/bookedSaudaStatus", aStatus);
+
+                                    oDialog.close();
+                                    MessageBox.success("Sauda approval request " + sNewId + " submitted successfully. Created order #" + sNewOrderId + " for " + sCust + ".");
+                                    
+                                    // Navigate to Booked Sauda Status page
+                                    that.oLocalModel.setProperty("/activeNav", "BookedSauda");
+                                    setTimeout(function () {
+                                        that._bindAllClickDelegates();
+                                    }, 100);
                                 }
                             }, "sauda-auth-submit-btn"),
                             that._createControl(Button, {
@@ -1599,6 +1677,34 @@ sap.ui.define([
             }.bind(this), 100);
             
             MessageToast.show("Navigated to " + sTabName);
+        },
+
+        onExit: function() {
+            if (this._dateTimeInterval) {
+                clearInterval(this._dateTimeInterval);
+            }
+        },
+
+        _updateDateTime: function() {
+            var oDate = new Date();
+            var aMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var sMonth = aMonths[oDate.getMonth()];
+            var sDay = oDate.getDate();
+            if (sDay < 10) {
+                sDay = "0" + sDay;
+            }
+            var sYear = oDate.getFullYear();
+            
+            var iHours = oDate.getHours();
+            var iMinutes = oDate.getMinutes();
+            var sAmPm = iHours >= 12 ? "PM" : "AM";
+            iHours = iHours % 12;
+            iHours = iHours ? iHours : 12;
+            var sHours = iHours < 10 ? "0" + iHours : iHours;
+            var sMinutes = iMinutes < 10 ? "0" + iMinutes : iMinutes;
+            
+            var sFormattedDateTime = sMonth + " " + sDay + ", " + sYear + " | " + sHours + ":" + sMinutes + " " + sAmPm;
+            this.oLocalModel.setProperty("/currentDateTime", sFormattedDateTime);
         }
     });
 });

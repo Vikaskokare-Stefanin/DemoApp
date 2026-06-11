@@ -1,0 +1,124 @@
+_schema-version: "3.2"
+ID: sauda-app-vk
+description: Sauda App - SAP Fiori Application
+version: 0.0.1
+
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+
+modules:
+  # ─── 1. HTML5 App Build ──────────────────────────────────────────
+  - name: sauda-app-vk
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      commands:
+        - npm run build
+      build-result: dist
+      supported-platforms: []
+
+  # ─── 2. HTML5 App Content Upload ────────────────────────────────
+  - name: sauda-app-vk-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: sauda-app-vk-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: sauda-app-vk
+          artifacts:
+            - sauda-app-vk.zip
+          target-path: resources/
+
+  # ─── 3. Destination Content ──────────────────────────────────────
+  - name: sauda-app-vk-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: sauda-app-vk-destination-service
+        parameters:
+          content-target: true
+      - name: sauda-app-vk-html5-repo-host
+        parameters:
+          ServiceInstanceName: sauda-app-vk-html5-app-host-service
+      - name: uaa_sauda-app-vk
+        parameters:
+          service-key:
+            name: uaa_sauda-app-vk-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: sauda-app-vk_html5_repo_host
+              ServiceInstanceName: sauda-app-vk-html5-app-host-service
+              ServiceKeyName: sauda-app-vk_html5_repo_host-key
+              sap.cloud.service: sauda-app-vk
+            - Authentication: OAuth2UserTokenExchange
+              Name: uaa_sauda-app-vk
+              ServiceInstanceName: sauda-app-vk-xsuaa-service
+              ServiceKeyName: uaa_sauda-app-vk-key
+              sap.cloud.service: sauda-app-vk
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+
+  # ─── 4. Approuter ────────────────────────────────────────────────
+  - name: sauda-app-vk-approuter
+    type: approuter.nodejs
+    path: approuter
+    parameters:
+      memory: 256M
+      disk-quota: 256M
+    requires:
+      - name: uaa_sauda-app-vk
+      - name: sauda-app-vk-destination-service
+      - name: sauda-app-vk-html5-repo-runtime
+
+resources:
+  # ─── Destination Service ─────────────────────────────────────────
+  - name: sauda-app-vk-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: sauda-app-vk-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+            existing_destinations_policy: update
+
+  # ─── HTML5 App Host ──────────────────────────────────────────────
+  - name: sauda-app-vk-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: sauda-app-vk-html5-app-host-service
+      service-plan: app-host
+
+  # ─── HTML5 App Runtime ───────────────────────────────────────────
+  - name: sauda-app-vk-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  # ─── XSUAA ───────────────────────────────────────────────────────
+  - name: uaa_sauda-app-vk
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-name: sauda-app-vk-xsuaa-service
+      service-plan: application
+      path: ./xs-security.json

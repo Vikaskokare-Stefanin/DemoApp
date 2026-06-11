@@ -29,20 +29,32 @@
   padding: 16px !important;
 }
 
-/* Custom Header styles */
 .custom-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 20px;
-  background-color: transparent;
+  height: 72px;
+  padding: 0 32px;
+  background-color: var(--bg-light) !important;
+  box-sizing: border-box;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.app-logo {
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px rgba(242, 111, 33, 0.2);
 }
 
 /* Stylized Logo: Orange/white ring */
@@ -152,35 +164,25 @@
 /* Distributor Card Selector Wrapper */
 .distributor-card-wrapper {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  padding: 16px 20px;
+  border-radius: 12px;
+  padding: 10px 16px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   position: relative;
-  border: 1.5px solid transparent;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.distributor-card-wrapper:hover {
-  border-color: rgba(242, 111, 33, 0.15);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--primary-orange) !important; /* Premium orange border matching mockup */
+  box-shadow: none !important;
 }
 
 .distributor-badge {
   position: absolute;
   top: -10px;
-  left: 20px;
-  background-color: white;
-  padding: 2px 10px;
-  border-radius: 4px;
-  font-size: 10px;
+  left: 16px;
+  background-color: white !important;
+  padding: 0px 8px !important;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--primary-orange);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.02);
-  border-left: 1px solid rgba(242, 111, 33, 0.2);
-  border-right: 1px solid rgba(242, 111, 33, 0.2);
+  color: var(--primary-orange) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .distributor-select {
@@ -189,24 +191,47 @@
   background: transparent !important;
 }
 
-.distributor-select .sapMSlt {
+/* Strip all default borders, shadows, outlines, and focus/hover rings from UI5 Select control */
+.distributor-select,
+.distributor-select .sapMSlt,
+.distributor-select .sapMSltInner,
+.distributor-select .sapMSltInner:hover,
+.distributor-select .sapMSltInner:focus,
+.distributor-select .sapMSltLabel,
+.distributor-select .sapMSltArrow,
+.distributor-select.sapMSlt,
+.distributor-select.sapMSlt:hover,
+.distributor-select.sapMSlt:focus,
+.distributor-select.sapMSltHoverable,
+.distributor-select.sapMSltFocus,
+.distributor-select .sapMSltHoverable,
+.distributor-select .sapMSltFocus {
   border: none !important;
+  border-color: transparent !important;
   background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.distributor-select .sapMSlt {
   height: 36px !important;
 }
 
 .distributor-select .sapMSltLabel {
   font-size: 16px !important;
   font-weight: 700 !important;
-  color: var(--text-dark) !important;
+  color: var(--text-dark) !important; /* Bold dark text color */
   line-height: 36px !important;
+  padding-left: 0px !important; /* Remove padding to align left text */
 }
 
 .distributor-select .sapMSltArrow {
-  color: var(--text-dark) !important;
+  color: var(--text-dark) !important; /* Dark chevron color */
   font-size: 16px !important;
 }
 
+/* Sauda & Sales Tab Buttons */
 /* Sauda & Sales Tab Buttons */
 .tab-toggle-container {
   display: flex;
@@ -216,10 +241,20 @@
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
   border: 1px solid #e2e8f0;
+  width: 280px !important;      /* Restrict width to look like mockup */
+  margin-left: auto !important;  /* Center horizontally */
+  margin-right: auto !important; /* Center horizontally */
+}
+
+/* Ensure the SAPUI5 HBox flex wrappers span 50% width of the container */
+.tab-toggle-container > div,
+.tab-toggle-container > .sapMFlexItem {
+  flex: 1 !important;
+  width: 50% !important;
 }
 
 .tab-btn {
-  flex: 1 !important;
+  width: 100% !important; /* Stretch to fill the 50% wrapper */
   height: 40px !important;
   background: transparent !important;
   border: none !important;
@@ -251,11 +286,13 @@
   line-height: normal !important;
 }
 
+.tab-btn-active .sapMBtnInner,
 .tab-btn[data-active="true"] .sapMBtnInner {
   background: linear-gradient(90deg, #f27024 0%, #f8b517 100%) !important;
   box-shadow: 0 4px 12px rgba(242, 111, 33, 0.2) !important;
 }
 
+.tab-btn-active .sapMBtnContent,
 .tab-btn[data-active="true"] .sapMBtnContent {
   color: white !important;
 }
@@ -271,6 +308,11 @@
   box-shadow: none !important;
 }
 
+.tab-btn-active.sapMBtn:hover > .sapMBtnInner,
+.tab-btn-active.sapMBtn:focus > .sapMBtnInner,
+.tab-btn-active.sapMBtnActive > .sapMBtnInner,
+.tab-btn-active.sapMBtn.sapMBtnHoverable:hover > .sapMBtnInner,
+.tab-btn-active.sapMBtn.sapMBtnFocusable:focus > .sapMBtnInner,
 .tab-btn[data-active="true"].sapMBtn:hover > .sapMBtnInner,
 .tab-btn[data-active="true"].sapMBtn:focus > .sapMBtnInner,
 .tab-btn[data-active="true"].sapMBtnActive > .sapMBtnInner,
@@ -285,6 +327,8 @@
   color: #2c3e50 !important;
 }
 
+.tab-btn-active.sapMBtn:hover .sapMBtnContent,
+.tab-btn-active.sapMBtn:focus .sapMBtnContent,
 .tab-btn[data-active="true"].sapMBtn:hover .sapMBtnContent,
 .tab-btn[data-active="true"].sapMBtn:focus .sapMBtnContent {
   color: white !important;
@@ -490,7 +534,10 @@
 
 /* Dynamic Cards Custom Styling */
 .metric-card-custom {
-  border-radius: var(--border-radius-md);
+  border-top-left-radius: 28px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 28px !important;
+  border-bottom-left-radius: 0px !important;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -501,6 +548,25 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
+}
+
+/* Specific ID selectors to ensure leaf curves are applied and not overridden by UI5 theme */
+[id$="cardExpired"],
+[id$="cardNearExpired"],
+[id$="cardRate"],
+[id$="cardPendingSauda"],
+[id$="cardOverdue"],
+[id$="cardTomorrowDue"],
+[id$="cardExtension"],
+[id$="cardBookedSauda"],
+[id$="cardPriceDiscovery"],
+[id$="cardLimitEnhance"],
+[id$="cardSalesOrder"],
+[id$="cardSaudaApproval"] {
+  border-top-left-radius: 28px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 28px !important;
+  border-bottom-left-radius: 0px !important;
 }
 
 .metric-card-custom:hover {
@@ -565,7 +631,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 80px; /* spacing for sticky footer */
+  margin-bottom: 0px; /* spacing handled by main-scroll-content padding */
 }
 
 @media (min-width: 768px) {
@@ -1306,11 +1372,14 @@
   font-size: 14px !important;
 }
 .card-title-sm {
-  font-size: 14px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 .card-value-lg {
-  font-size: 15px !important;
-  margin-top: 10px !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  margin-top: auto !important;
 }
 .dist-val-text[data-active="true"] {
   font-weight: 800 !important;
@@ -1321,7 +1390,7 @@
   color: #64748b !important;
 }
 .sauda-grid-margin {
-  margin-bottom: 80px !important;
+  margin-bottom: 0px !important;
 }
 .sauda-card-title {
   font-size: 14px !important;
@@ -1334,7 +1403,7 @@
 }
 .placeholder-panel {
   padding: 40px !important;
-  margin-bottom: 80px !important;
+  margin-bottom: 0px !important;
 }
 .placeholder-icon {
   font-size: 48px !important;
@@ -1435,7 +1504,9 @@
   font-weight: 700 !important;
   color: #94a3b8 !important;
   text-align: center;
-  min-height: 14px;
+  display: block !important;
+  height: 14px !important;
+  line-height: 14px !important;
   text-transform: uppercase;
 }
 
@@ -1786,17 +1857,23 @@
 }
 
 /* Custom rounded SearchField styling */
-.custom-search-field.sapMSF {
+.custom-search-field.sapMSF,
+.custom-search-field.sapMSF:hover,
+.custom-search-field.sapMSF:focus,
+.custom-search-field.sapMSF.sapMSFFoc {
   border: 1px solid #cbd5e1 !important;
   border-radius: 12px !important;
   background-color: white !important;
   height: 44px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
-  overflow: hidden;
+  overflow: hidden !important;
+  outline: none !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.custom-search-field.sapMSF.sapMSFFoc {
+/* Focus state for outer container */
+.custom-search-field.sapMSF.sapMSFFoc,
+.custom-search-field.sapMSF:focus-within {
   border-color: var(--primary-orange) !important;
   box-shadow: 0 0 0 3px rgba(242, 111, 33, 0.15) !important;
 }
@@ -1815,19 +1892,23 @@
   background-size: 16px 16px !important;
 }
 
-.custom-search-field.sapMSF .sapMSFI:focus {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* Strip inner borders and bottom underlines */
+/* Strip inner borders, outlines, focus lines and backgrounds from all nested search elements */
+.custom-search-field .sapMSFIB,
+.custom-search-field .sapMSFIB:hover,
+.custom-search-field .sapMSFIB:focus,
+.custom-search-field .sapMSFIB:focus-within,
+.custom-search-field .sapMSFI,
+.custom-search-field .sapMSFI:hover,
+.custom-search-field .sapMSFI:focus,
+.custom-search-field .sapMSFI:focus-within,
 .custom-search-field.sapMSF .sapMInputBaseInner,
 .custom-search-field.sapMSF .sapMInputBaseContentWrapper,
 .custom-search-field.sapMSF .sapMSFIB {
   border: none !important;
+  border-color: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
+  outline: none !important;
   background: transparent !important;
   background-color: transparent !important;
 }
@@ -1931,39 +2012,28 @@
   font-family: 'Outfit', sans-serif !important;
 }
 
-.sauda-auth-submit-btn {
-  background: linear-gradient(90deg, #f26f21 0%, #f9a01b 100%) !important;
-  border: none !important;
-  color: white !important;
-  font-weight: 700 !important;
-  font-size: 13px !important;
-  height: 42px !important;
-  border-radius: 14px !important;
+/* Style the HBox flex item wrapper divs to take 48% width */
+.sauda-auth-buttons-row > div,
+.sauda-auth-buttons-row > .sapMFlexItem {
   width: 48% !important;
-  box-shadow: 0 4px 6px -1px rgba(242, 111, 33, 0.2) !important;
-  font-family: 'Outfit', sans-serif !important;
+}
+
+.sauda-auth-submit-btn.sapMBtn,
+.sauda-auth-close-btn.sapMBtn {
+  width: 100% !important; /* Stretch to fill the 48% flex wrapper */
+  height: 42px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .sauda-auth-submit-btn:hover {
   opacity: 0.9 !important;
 }
 
-.sauda-auth-close-btn {
-  background-color: #f1f5f9 !important;
-  border: none !important;
-  color: #0f172a !important;
-  font-weight: 700 !important;
-  font-size: 13px !important;
-  height: 42px !important;
-  border-radius: 14px !important;
-  width: 48% !important;
-  box-shadow: none !important;
-  font-family: 'Outfit', sans-serif !important;
-  transition: background-color 0.2s ease !important;
-}
-
 .sauda-auth-close-btn:hover {
-  background-color: #e2e8f0 !important;
+  opacity: 0.9 !important;
 }
 
 .sauda-auth-buttons-row {
@@ -1972,6 +2042,58 @@
   align-items: center !important;
   width: 100% !important;
   margin-top: 10px !important;
+}
+
+.sauda-auth-submit-btn .sapMBtnInner {
+  background: linear-gradient(90deg, #f26f21 0%, #f9a01b 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 100px !important;
+  box-shadow: 0 4px 6px -1px rgba(242, 111, 33, 0.2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+.sauda-auth-close-btn .sapMBtnInner {
+  background-color: #f1f5f9 !important;
+  border: none !important;
+  color: #0056b3 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 100px !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  font-family: 'Outfit', sans-serif !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.sauda-auth-close-btn:hover .sapMBtnInner {
+  background-color: #e2e8f0 !important;
+}
+
+.sauda-auth-submit-btn .sapMBtnContent,
+.sauda-auth-close-btn .sapMBtnContent {
+  width: 100% !important;
+  text-align: center !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: normal !important;
 }
 
 /* Custom Today's Rate Calculator Dialog styles */
@@ -2369,4 +2491,8 @@
   font-weight: 700 !important;
   color: #10b981 !important;
   font-family: 'Outfit', sans-serif !important;
+}
+
+.main-scroll-content {
+  padding-bottom: 80px !important;
 }

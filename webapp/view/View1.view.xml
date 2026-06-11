@@ -7,32 +7,30 @@
     
     <Page id="page" showHeader="false" class="custom-page-bg">
         <content>
-            <ScrollContainer height="100%" width="100%" vertical="true" horizontal="false">
-                <VBox class="sapUiContentPadding" width="100%">
+            <!-- Header Section (Common across pages) -->
+            <HBox class="custom-header">
+                <HBox class="header-left-group">
+                    <VBox class="logo-container">
+                        <Image src="logo.png" class="app-logo" width="54px" height="54px"/>
+                    </VBox>
                     
-                    <!-- Header Section (Common across pages) -->
-                    <HBox class="custom-header">
-                        <VBox class="logo-container">
-                            <VBox class="custom-logo">
-                                <VBox class="custom-logo-inner">
-                                    <Text text="S" class="custom-logo-text"/>
-                                </VBox>
-                            </VBox>
-                        </VBox>
-                        
-                        <HBox class="profile-container">
-                            <Avatar src="sap-icon://person-placeholder" class="profile-avatar" displaySize="S"/>
-                            <VBox class="profile-text-wrapper">
-                                <Text text="Rohan Shelar" class="profile-name"/>
-                                <Text text="Jun 08, 2026 | 05:24 PM" class="profile-date"/>
-                            </VBox>
-                        </HBox>
-                        
-                        <VBox id="notificationBell" class="bell-container">
-                            <core:Icon src="sap-icon://bell" class="bell-icon"/>
-                            <VBox class="bell-badge"/>
+                    <HBox class="profile-container">
+                        <Avatar src="sap-icon://person-placeholder" class="profile-avatar" displaySize="S"/>
+                        <VBox class="profile-text-wrapper">
+                            <Text text="Rohan Shelar" class="profile-name"/>
+                            <Text text="{localState>/currentDateTime}" class="profile-date"/>
                         </VBox>
                     </HBox>
+                </HBox>
+                
+                <VBox id="notificationBell" class="bell-container">
+                    <core:Icon src="sap-icon://bell" class="bell-icon"/>
+                    <VBox class="bell-badge"/>
+                </VBox>
+            </HBox>
+
+            <ScrollContainer height="calc(100% - 72px)" width="100%" vertical="true" horizontal="false">
+                <VBox class="sapUiContentPadding main-scroll-content" width="100%">
                     
                     <!-- PAGE 1: HOME DASHBOARD -->
                     <VBox visible="{= ${localState>/activeNav} === 'Home' }" width="100%">
@@ -210,7 +208,7 @@
                                 <!-- Card 3: Today's Rate -->
                                 <VBox id="cardRate" class="metric-card-custom card-blue">
                                     <HBox class="card-row-top">
-                                        <Text text="{localState>/avgRate}" class="card-value-text"/>
+                                        <Text text="Today's Rate" class="card-value-text"/>
                                         <VBox class="card-icon-circle">
                                             <Text text="₹" class="card-icon card-currency-icon"/>
                                         </VBox>
@@ -223,7 +221,7 @@
                                     <HBox class="card-row-top">
                                         <Text text="{localState>/pendingSaudaValue}" class="card-value-text"/>
                                         <VBox class="card-icon-circle">
-                                            <core:Icon src="sap-icon://clock" class="card-icon"/>
+                                            <core:Icon src="sap-icon://pending" class="card-icon"/>
                                         </VBox>
                                     </HBox>
                                     <Text text="Pending Sauda" class="card-label-bottom"/>

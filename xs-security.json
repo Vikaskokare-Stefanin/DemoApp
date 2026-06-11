@@ -1,0 +1,7 @@
+{
+  "xsappname": "sauda-app-vk",
+  "tenant-mode": "dedicated",
+  "description": "Sauda App XSUAA Security",
+  "scopes": [],
+  "role-templates": []
+}

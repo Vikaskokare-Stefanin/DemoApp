@@ -2,14 +2,14 @@
 
 specVersion: "4.0"
 metadata:
-  name: aiproject
+  name: sauda-app-vk
 type: application
 server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertErrors: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: true
         ui5:
           path:
             - /resources
@@ -26,3 +26,11 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateComponentPreload
+      configuration:
+        archiveName: sauda-app-vk
+        additionalFiles:
+          - xs-app.json

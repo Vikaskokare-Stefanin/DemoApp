@@ -1,7 +1,7 @@
 {
   "_version": "1.85.0",
   "sap.app": {
-    "id": "aiproject",
+    "id": "sauda-app-vk",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -56,7 +56,7 @@
     "resources": {
       "css": [
         {
-          "uri": "css/style.css"
+          "uri": "css/style.css?v=10"
         }
       ]
     },

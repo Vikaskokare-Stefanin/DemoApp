@@ -446,13 +446,13 @@
       "momGrowth": "↑ 14.2% MoM",
       "monthlyVolume": [
         { "label": "OCT 25", "value": 25, "height": "25px" },
-        { "label": "", "value": 40, "height": "40px" },
+        { "label": " ", "value": 40, "height": "40px" },
         { "label": "DEC 25", "value": 20, "height": "20px" },
-        { "label": "", "value": 45, "height": "45px" },
+        { "label": " ", "value": 45, "height": "45px" },
         { "label": "FEB 26", "value": 55, "height": "55px" },
-        { "label": "", "value": 45, "height": "45px" },
+        { "label": " ", "value": 45, "height": "45px" },
         { "label": "APR 26", "value": 80, "height": "80px" },
-        { "label": "", "value": 70, "height": "70px" },
+        { "label": " ", "value": 70, "height": "70px" },
         { "label": "JUN 26", "value": 95, "height": "95px" }
       ],
       "productFamily": [
@@ -580,13 +580,13 @@
       "momGrowth": "↑ 14.2% MoM",
       "monthlyVolume": [
         { "label": "OCT 25", "value": 25, "height": "25px" },
-        { "label": "", "value": 40, "height": "40px" },
+        { "label": " ", "value": 40, "height": "40px" },
         { "label": "DEC 25", "value": 20, "height": "20px" },
-        { "label": "", "value": 45, "height": "45px" },
+        { "label": " ", "value": 45, "height": "45px" },
         { "label": "FEB 26", "value": 55, "height": "55px" },
-        { "label": "", "value": 45, "height": "45px" },
+        { "label": " ", "value": 45, "height": "45px" },
         { "label": "APR 26", "value": 80, "height": "80px" },
-        { "label": "", "value": 70, "height": "70px" },
+        { "label": " ", "value": 70, "height": "70px" },
         { "label": "JUN 26", "value": 95, "height": "95px" }
       ],
       "productFamily": [
@@ -601,13 +601,13 @@
       "momGrowth": "↑ 8.5% MoM",
       "monthlyVolume": [
         { "label": "OCT 25", "value": 15, "height": "15px" },
-        { "label": "", "value": 30, "height": "30px" },
+        { "label": " ", "value": 30, "height": "30px" },
         { "label": "DEC 25", "value": 35, "height": "35px" },
-        { "label": "", "value": 25, "height": "25px" },
+        { "label": " ", "value": 25, "height": "25px" },
         { "label": "FEB 26", "value": 50, "height": "50px" },
-        { "label": "", "value": 60, "height": "60px" },
+        { "label": " ", "value": 60, "height": "60px" },
         { "label": "APR 26", "value": 65, "height": "65px" },
-        { "label": "", "value": 55, "height": "55px" },
+        { "label": " ", "value": 55, "height": "55px" },
         { "label": "JUN 26", "value": 80, "height": "80px" }
       ],
       "productFamily": [
@@ -622,13 +622,13 @@
       "momGrowth": "↑ 5.2% MoM",
       "monthlyVolume": [
         { "label": "OCT 25", "value": 10, "height": "10px" },
-        { "label": "", "value": 20, "height": "20px" },
+        { "label": " ", "value": 20, "height": "20px" },
         { "label": "DEC 25", "value": 15, "height": "15px" },
-        { "label": "", "value": 25, "height": "25px" },
+        { "label": " ", "value": 25, "height": "25px" },
         { "label": "FEB 26", "value": 35, "height": "35px" },
-        { "label": "", "value": 40, "height": "40px" },
+        { "label": " ", "value": 40, "height": "40px" },
         { "label": "APR 26", "value": 45, "height": "45px" },
-        { "label": "", "value": 50, "height": "50px" },
+        { "label": " ", "value": 50, "height": "50px" },
         { "label": "JUN 26", "value": 60, "height": "60px" }
       ],
       "productFamily": [
@@ -643,13 +643,13 @@
       "momGrowth": "↑ 18.7% MoM",
       "monthlyVolume": [
         { "label": "OCT 25", "value": 5, "height": "5px" },
-        { "label": "", "value": 12, "height": "12px" },
+        { "label": " ", "value": 12, "height": "12px" },
         { "label": "DEC 25", "value": 18, "height": "18px" },
-        { "label": "", "value": 22, "height": "22px" },
+        { "label": " ", "value": 22, "height": "22px" },
         { "label": "FEB 26", "value": 30, "height": "30px" },
-        { "label": "", "value": 28, "height": "28px" },
+        { "label": " ", "value": 28, "height": "28px" },
         { "label": "APR 26", "value": 35, "height": "35px" },
-        { "label": "", "value": 32, "height": "32px" },
+        { "label": " ", "value": 32, "height": "32px" },
         { "label": "JUN 26", "value": 45, "height": "45px" }
       ],
       "productFamily": [
